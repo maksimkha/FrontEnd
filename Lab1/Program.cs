@@ -15,6 +15,8 @@ namespace UdpClientApp
         static string remoteAddress;
         static List<(int, string)> historyList = new List<(int, string)>();
         static int id = 0;
+        static UdpClient sender = new UdpClient();
+        static UdpClient receiver;
 
         static void Main(string[] args)
         {
@@ -24,6 +26,7 @@ namespace UdpClientApp
                 userName = Console.ReadLine();
                 Console.Write("Enter your port: ");
                 localPort = Int32.Parse(Console.ReadLine());
+                receiver = new UdpClient(localPort);
                 Console.Write("Enter your friend ip: ");
                 remoteAddress = Console.ReadLine();
                 Console.Write("Enter friend port: ");
@@ -41,7 +44,6 @@ namespace UdpClientApp
         }
         private static void SendMessage()
         {
-            UdpClient sender = new UdpClient();
             try
             {
                 while (true)
@@ -71,7 +73,6 @@ namespace UdpClientApp
 
         private static void ReceiveMessage()
         {
-            UdpClient receiver = new UdpClient(localPort);
             IPEndPoint remoteIp = null;
             try
             {
@@ -82,7 +83,7 @@ namespace UdpClientApp
                     int tempId = 0;
                     foreach (char i in message)
                     {
-                        if (i==' ')
+                        if (i == ' ')
                         {
                             message = message.Remove(0, 1);
                             break;
@@ -90,19 +91,24 @@ namespace UdpClientApp
                         tempId = tempId * 10 + Int32.Parse(i.ToString());
                         message = message.Remove(0, 1);
                     }
-                    historyList.Add((tempId, message));
-                    historyList.Sort((x, y) => x.Item1.CompareTo(y.Item1));
-                    Console.Clear();
-                    foreach (var note in historyList)
-                    {
-                        Console.WriteLine(note.Item1 + " " + note.Item2);
-                    }
-                    id++;
-                    if (historyList.Count > 1)
-                        if (tempId != historyList[historyList.Count - 2].Item1 + 1)
+                    if (check_error(message, tempId)) {
+                        historyList.Add((tempId, message));
+                        historyList.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+                        Console.Clear();
+                        foreach (var note in historyList)
                         {
-                            Console.WriteLine("Error with message order ");
+                            Console.WriteLine(note.Item1 + " " + note.Item2);
                         }
+                        id++;
+                        if (historyList.Count > 1)
+                            if (tempId != historyList[historyList.Count - 2].Item1 + 1)
+                            {
+                                Console.WriteLine("Error with message order");
+                                message = String.Format((historyList[historyList.Count - 2].Item1 + 1).ToString());
+                                byte[] error = Encoding.Unicode.GetBytes(message);
+                                sender.Send(error, error.Length, remoteAddress, remotePort);
+                            }
+                    }
                 }
             }
             catch (Exception ex)
@@ -113,6 +119,17 @@ namespace UdpClientApp
             {
                 receiver.Close();
             }
+        }
+        private static bool check_error(string message, int id)
+        {
+            if (message == "")
+            {
+                message = historyList[id].Item2;
+                byte[] data = Encoding.Unicode.GetBytes(message);
+                sender.Send(data, data.Length, remoteAddress, remotePort);
+                return false;
+            }
+            return true;
         }
     }
 }

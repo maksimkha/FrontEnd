@@ -10,3 +10,4 @@ D:\work\itirod\Lab1\obj\Debug\netcoreapp3.1\Lab1.csproj.CoreCompileInputs.cache
 D:\work\itirod\Lab1\obj\Debug\netcoreapp3.1\Lab1.dll
 D:\work\itirod\Lab1\obj\Debug\netcoreapp3.1\Lab1.pdb
 D:\work\itirod\Lab1\obj\Debug\netcoreapp3.1\Lab1.genruntimeconfig.cache
+D:\work\itirod\Lab1\obj\Debug\netcoreapp3.1\Lab1.csprojAssemblyReference.cache
