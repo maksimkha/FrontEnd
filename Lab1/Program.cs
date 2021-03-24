@@ -104,7 +104,7 @@ namespace UdpClientApp
                             if (tempId != historyList[historyList.Count - 2].Item1 + 1)
                             {
                                 Console.WriteLine("Error with message order");
-                                message = String.Format((historyList[historyList.Count - 2].Item1 + 1).ToString());
+                                message = String.Format((historyList[historyList.Count - 2].Item1 + " " + tempId).ToString());
                                 byte[] error = Encoding.Unicode.GetBytes(message);
                                 sender.Send(error, error.Length, remoteAddress, remotePort);
                             }
