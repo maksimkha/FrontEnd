@@ -104,7 +104,7 @@ namespace UdpClientApp
                             if (tempId != historyList[historyList.Count - 2].Item1 + 1)
                             {
                                 Console.WriteLine("Error with message order");
-                                message = String.Format((historyList[historyList.Count - 2].Item1 + " " + tempId).ToString());
+                                message = String.Format((historyList[historyList.Count - 2].Item1 + 1).ToString());
                                 byte[] error = Encoding.Unicode.GetBytes(message);
                                 sender.Send(error, error.Length, remoteAddress, remotePort);
                             }
@@ -124,9 +124,12 @@ namespace UdpClientApp
         {
             if (message == "")
             {
-                message = historyList[id].Item2;
-                byte[] data = Encoding.Unicode.GetBytes(message);
-                sender.Send(data, data.Length, remoteAddress, remotePort);
+                while (id < historyList.Count) {
+                    message = historyList[id].Item2;
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    sender.Send(data, data.Length, remoteAddress, remotePort);
+                    id++;
+                }
                 return false;
             }
             return true;
