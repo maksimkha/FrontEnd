@@ -1,0 +1,79 @@
+<html> 
+  <head>
+    <link rel='stylesheet' type='text/css' href='styles.css'>
+    <title>Create - Agrexa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div>
+          <label class="switch">
+            <input type="checkbox" id="togBtn">
+            <div class="slider round"></div>
+          </label>
+        </div><!-- 
+      --><div>
+            <form>
+              <button class="topbar__site-name" formaction="index.html">Agrexa</button>
+            </form>
+          </div><!-- 
+        --><div>
+            <form>
+              <button class="topbar__button" formaction="signup.html">Sign up</button>
+            </form>
+          </div>
+      </div>
+    </header>
+    <main>
+      <div class="pagebar">
+        <h1>Add an expence
+      </div>
+        <form class="create-form" id="form1">
+                <div class="create-form__line-container">
+                    <label>Event:</label>
+                    <input type="text">
+                </div>
+                <div class="create-form__line-container">
+                    <label>Category:</label>
+                    <select>
+                        <option>Entertaiment</option>
+                        <option>Food and drink</option>
+                        <option>Home</option>
+                        <option>Life</option>
+                        <option>Utility</option>
+                        <option>Others</option>
+                    </select>
+                </div>
+                <div class="create-form__line-container">
+                    <label>Check amount:</label>
+                    <input type="number">
+                </div>
+                <div class="create-form__line-container">
+                    <label>Photo(opt.):</label>
+                    <input type="file" accept=".jpg,.jpeg,.png">
+                </div>
+                <div class="create-form__line-container">
+                    <label>Split method:</label>
+                    <select>
+                        <option>Equal</option>
+                        <option>Amounts</option>
+                    </select>
+                </div>
+                <div class="create-form__line-container">
+                  <button>Add</button>
+                  <button>Delete</button>
+                </div>
+                <div class="create-form__line-container">
+                  <input>
+                  <label>pays</label>
+                  <input type="number">
+                </div>
+                <button>Save</button>
+          </form>
+    </main>
+    <footer>
+      <h3>Khatskevich, 2021
+    </footer>
+  </body>
+</html>
