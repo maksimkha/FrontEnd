@@ -5,7 +5,6 @@
     <style>
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
@@ -62,11 +61,11 @@
           <script>
             function change_lng(){
               btn = document.getElementById("togBtn");
-              if (btn.checked == true){
-                location.href = "#ru";
+              if (btn.checked == false){
+                location.href = "#en";
               }
               else{
-                location.href ="#en";
+                location.href ="#ru";
               }
               location.reload();
             }
@@ -142,7 +141,6 @@
         if (window.location.hash){
           console.log(window.location.hash);
           if (window.location.hash == "#ru"){
-            console.log("here!");
             document.getElementById("togBtn").checked = true;
             document.getElementById("account").text = language.ru.account;
             document.getElementById("dashboard").innerHTML = language.ru.dashboard;
@@ -153,7 +151,6 @@
             document.getElementById("you_are_list").innerHTML = language.ru.you_are_owed;
           }
           else{
-            console.log("there!");
             document.getElementById("togBtn").checked = false;
             document.getElementById("account").text = language.en.account;
             document.getElementById("dashboard").innerHTML = language.en.dashboard;

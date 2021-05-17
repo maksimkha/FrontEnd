@@ -1,4 +1,4 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Item - Agrexa</title>
@@ -101,9 +101,21 @@
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
+          <script>
+            function change_lng(){
+              btn = document.getElementById("togBtn");
+              if (btn.checked == true){
+                location.href = "#ru";
+              }
+              else{
+                location.href ="#en";
+              }
+              location.reload();
+            }
+          </script>
         </div><!-- 
         --><div>
           <a href="index.html" class="topbar__site-name">Agrexa</a>
@@ -115,44 +127,99 @@
     </header>
     <main>
       <div class="pagebar">
-        <h1>Owe page
+        <h1 id="owe_h">Owe page
       </div>
         <form class="page-form" id="form1">
                 <div class="page-form__line-container">
-                    <label>Event:</label>
+                    <label id="event_label">Event:</label>
                     <input type="text" readonly id="event">
                 </div>
                 <div class="page-form__line-container">
-                    <label>Category:</label>
+                    <label id="category_label">Category:</label>
                     <input type="text" readonly id="category">
                 </div>
                 <div class="page-form__line-container">
-                    <label>Check amount:</label>
+                    <label id="check_amount_label">Check amount:</label>
                     <input type="number" readonly id="amount">
                 </div>
                 <div class="page-form__line-container">
-                    <label>Photo(opt.):</label>
+                    <label id="photo_label">Photo(opt.):</label>
                     <img>
                 </div>
                 <div class="page-form__line-container">
-                    <label>Split method:</label>
+                    <label id="method_label">Split method:</label>
                     <input type="text" readonly id="method">
                 </div>
                 <div class="page-form__line-container">
                   <input readonly name="user_name">
-                  <label>paid</label>
+                  <label>-</label>
                   <input type="number" readonly name="user_amount">
                 </div>
                 <div class="page-form__line-container">
                   <input readonly name="user_name">
-                  <label>pays</label>
+                  <label>-</label>
                   <input type="number" readonly name="user_amount">
                 </div>
                 <div class="page-form__line-container">
                   <button onclick="edit_item();return false;" id="edit_btn">Edit</button>
-                  <button onclick="delete_item();return false;">Delete</button>
+                  <button onclick="delete_item();return false;" id="delete_btn">Delete</button>
                 </div>
           </form>
+      <script>
+        language = {
+          en: {
+            "account": "Account",
+            "owe_page": "Owe page",
+            "event": "Event: ",
+            "category": "Category: ",
+            "check_amount": "Check amount: ",
+            "photo": "Photo(opt.): ",
+            "method": "Split method:",
+            "edit": "Edit",
+            "save": "Save",
+            "delete": "Delete",
+          },
+          ru: {
+            "account": "Аккаунт",
+            "owe_page": "Страница траты",
+            "event": "Событие: ",
+            "category": "Категория: ",
+            "check_amount": "Счет: ",
+            "photo": "Фото(опц.): ",
+            "method": "Дележка: ",
+            "edit": "Изменить",
+            "save": "Сохранить",
+            "delete": "Удалить",
+          }
+        };
+        if (window.location.hash){
+          console.log(window.location.hash);
+          if (window.location.hash == "#ru"){
+            document.getElementById("togBtn").checked = true;
+            document.getElementById("account").text = language.ru.account;
+            document.getElementById("owe_h").innerHTML = language.ru.owe_page;
+            document.getElementById("event_label").innerHTML = language.ru.event;
+            document.getElementById("category_label").innerHTML = language.ru.category;
+            document.getElementById("check_amount_label").innerHTML = language.ru.owe_page;
+            document.getElementById("photo_label").innerHTML = language.ru.owe_page;
+            document.getElementById("method_label").innerHTML = language.ru.method;
+            document.getElementById("edit_btn").innerHTML = language.ru.edit;
+            document.getElementById("delete_btn").innerHTML = language.ru.delete;
+          }
+          else{
+            document.getElementById("togBtn").checked = false;
+            document.getElementById("account").text = language.en.account;
+            document.getElementById("owe_h").innerHTML = language.en.owe_page;
+            document.getElementById("event_label").innerHTML = language.en.event;
+            document.getElementById("category_label").innerHTML = language.en.category;
+            document.getElementById("check_amount_label").innerHTML = language.en.check_amount;
+            document.getElementById("photo_label").innerHTML = language.en.photo;
+            document.getElementById("method_label").innerHTML = language.en.method;
+            document.getElementById("edit_btn").innerHTML = language.en.edit;
+            document.getElementById("delete_btn").innerHTML = language.en.delete;
+          }
+        }
+      </script>
     </main>
     <footer>
       <h3>Khatskevich, 2021

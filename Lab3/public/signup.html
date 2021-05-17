@@ -1,4 +1,4 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Sign up - Agrexa</title>
@@ -18,7 +18,6 @@
           }
         });
       }
-      window.onload = google_sign;
     </script>
   </head>
   <body>
@@ -26,9 +25,21 @@
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
+          <script>
+            function change_lng(){
+              btn = document.getElementById("togBtn");
+              if (btn.checked == false){
+                location.href = "#en";
+              }
+              else{
+                location.href ="#ru";
+              }
+              location.reload();
+            }
+          </script>
         </div><!-- 
         --><div>
             <a href="index.html" class="topbar__site-name">Agrexa</a>
@@ -41,13 +52,38 @@
     <main>
         <div class="sign-area">
         <div id="gSignInWrapper">
-            <span class="sign-area__sign-label">Sign in with:</span>
+            <span class="sign-area__sign-label" id="sign_label">Sign in with:</span>
             <div id="custom-sign-btn" class="customGPlusSignIn">
               <span class="sign-area__sign-icon"></span>
               <span class="sign-area__sign-btntext" onclick="google_sign()">Google</span>
             </div>
           </div>
         </div> 
+        <script>
+          language = {
+            en: {
+              "account": "Account",
+              "sign": "Sign in with: ",
+            },
+            ru: {
+              "account": "Аккаунт",
+              "sign": "Войти с помощью: ",
+            }
+          };
+          if (window.location.hash){
+            console.log(window.location.hash);
+            if (window.location.hash == "#ru"){
+              document.getElementById("togBtn").checked = true;
+              document.getElementById("account").text = language.ru.account;
+              document.getElementById("sign_label").innerHTML = language.ru.sign;
+            }
+            else{
+              document.getElementById("togBtn").checked = false;
+              document.getElementById("account").text = language.en.account;
+              document.getElementById("sign_label").innerHTML = language.en.sign;
+            }
+          }
+        </script>
     </main>
     <footer>
       <h3>Khatskevich, 2021

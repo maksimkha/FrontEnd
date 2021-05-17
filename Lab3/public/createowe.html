@@ -1,4 +1,4 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Create - Agrexa</title>
@@ -60,10 +60,10 @@
         const div = document.createElement('div');
         div.className = "create-form__line-container"
         if (method == "Equal"){
-          div.innerHTML = "<input><label name='user_name'>pays</label><input name='user_amount'  type='number' value=0 readonly>";
+          div.innerHTML = "<input><label name='user_name'>-</label><input name='user_amount'  type='number' value=0 readonly>";
         }
         else{
-          div.innerHTML = "<input><label name='user_name'>pays</label><input name='user_amount'  type='number'>";
+          div.innerHTML = "<input><label name='user_name'>-</label><input name='user_amount'  type='number'>";
         }
         saveBtn = document.getElementById("saveBtn");
         form = document.getElementById("create-form");
@@ -102,9 +102,21 @@
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
+          <script>
+            function change_lng(){
+              btn = document.getElementById("togBtn");
+              if (btn.checked == true){
+                location.href = "#ru";
+              }
+              else{
+                location.href ="#en";
+              }
+              location.reload();
+            }
+          </script>
         </div><!-- 
       --><div>
             <a href="index.html" class="topbar__site-name">Agrexa</a>
@@ -116,15 +128,15 @@
     </header>
     <main>
       <div class="pagebar">
-        <h1>Add an expence
+        <h1 id="exp_h">Add an expence
       </div>
       <form class="create-form" id="create-form">
         <div class="create-form__line-container">
-            <label>Event:</label>
+            <label id="event_label">Event:</label>
             <input type="text" name="event" id="event">
         </div>
         <div class="create-form__line-container">
-            <label>Category:</label>
+            <label id="category_label">Category:</label>
             <select name="category" id="category">
                 <option>Entertaiment</option>
                 <option>Food and drink</option>
@@ -135,15 +147,15 @@
             </select>
         </div>
         <div class="create-form__line-container">
-            <label>Check amount:</label>
+            <label id="check_amount_label">Check amount:</label>
             <input type="number" name="amount" id="amount">
         </div>
         <div class="create-form__line-container">
-            <label>Photo(opt.):</label>
+            <label id="photo_label">Photo(opt.):</label>
             <input type="file" name="photo" id="photo" accept=".jpg,.jpeg,.png">
         </div>
         <div class="create-form__line-container">
-            <label>Split method:</label>
+            <label id="method_label">Split method:</label>
             <select name="method" id="method" onchange="paid_method()">
               <option>Amounts</option>
               <option>Equal</option>
@@ -155,16 +167,73 @@
         </div>
         <div class="create-form__line-container">
           <input name="user_name" value="I" readonly>
-          <label>paid</label>
+          <label>-</label>
           <input name="user_amount" type="number">
         </div>
         <div class="create-form__line-container">
           <input name="user_name">
-          <label>pays</label>
+          <label>-</label>
           <input name="user_amount" type="number">
         </div>
         <button onclick="save_owe();return false;" id="saveBtn">Save</button>
       </form>
+      <script>
+        language = {
+          en: {
+            "account": "Account",
+            "expence": "Add an expence",
+            "event": "Event: ",
+            "category": "Category: ",
+            "check_amount": "Check amount: ",
+            "photo": "Photo(opt.): ",
+            "method": "Split method:",
+            "save": "Save",
+            "add": "Add",
+            "delete": "Delete",
+          },
+          ru: {
+            "account": "Аккаунт",
+            "expence": "Добавить трату",
+            "event": "Событие: ",
+            "category": "Категория: ",
+            "check_amount": "Счет: ",
+            "photo": "Фото(опц.): ",
+            "method": "Дележка: ",
+            "save": "Сохранить",
+            "add": "Добавить",
+            "delete": "Удалить",
+          }
+        };
+        if (window.location.hash){
+          console.log(window.location.hash);
+          if (window.location.hash == "#ru"){
+            document.getElementById("togBtn").checked = true;
+            document.getElementById("account").text = language.ru.account;
+            document.getElementById("exp_h").innerHTML = language.ru.expence;
+            document.getElementById("event_label").innerHTML = language.ru.event;
+            document.getElementById("category_label").innerHTML = language.ru.category;
+            document.getElementById("check_amount_label").innerHTML = language.ru.check_amount;
+            document.getElementById("photo_label").innerHTML = language.ru.photo;
+            document.getElementById("method_label").innerHTML = language.ru.method;
+            document.getElementById("addition").innerHTML = language.ru.add;
+            document.getElementById("delete").innerHTML = language.ru.delete;
+            document.getElementById("saveBtn").innerHTML = language.ru.save;
+          }
+          else{
+            document.getElementById("togBtn").checked = false;
+            document.getElementById("account").text = language.en.account;
+            document.getElementById("exp_h").innerHTML = language.en.expence;
+            document.getElementById("event_label").innerHTML = language.en.event;
+            document.getElementById("category_label").innerHTML = language.en.category;
+            document.getElementById("check_amount_label").innerHTML = language.en.check_amount;
+            document.getElementById("photo_label").innerHTML = language.en.photo;
+            document.getElementById("method_label").innerHTML = language.en.method;
+            document.getElementById("addition").innerHTML = language.en.add;
+            document.getElementById("delete").innerHTML = language.en.delete;
+            document.getElementById("saveBtn").innerHTML = language.en.save;
+          }
+        }
+      </script>
     </main>
     <footer>
       <h3>Khatskevich, 2021
