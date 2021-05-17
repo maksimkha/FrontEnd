@@ -1,10 +1,11 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Main - Agrexa</title>
     <style>
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
@@ -36,9 +37,9 @@
                     minus += childSnapshot.val().difference;
                   }
                 });
-                document.getElementById("minus_label").innerHTML = "You owe: " + minus + '$';
-                document.getElementById("plus_label").innerHTML = "You are owed: " + plus + '$';
-                document.getElementById("total_label").innerHTML = "Total balance: " + (plus - minus) + '$';
+                document.getElementById("minus_label").innerHTML = minus;
+                document.getElementById("plus_label").innerHTML = plus;
+                document.getElementById("total_label").innerHTML = (plus - minus);
               });
             } else {
               const googleAuth = new firebase.auth.GoogleAuthProvider();
@@ -51,15 +52,28 @@
   </head>
   <body>
     <header>
+      <div id="div1"></div>
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
+          <script>
+            function change_lng(){
+              btn = document.getElementById("togBtn");
+              if (btn.checked == true){
+                location.href = "#ru";
+              }
+              else{
+                location.href ="#en";
+              }
+              location.reload();
+            }
+          </script>
         </div><!-- 
         --><div>
-              <a href="index.html" class="topbar__site-name">Agrexa</a>
+              <a href="index.html" class="topbar__site-name" id="site_name">Agrexa</a>
             </div><!-- 
           --><div>
               <a href="signup.html" class="topbar__account" id='account'>Account</a>
@@ -71,7 +85,7 @@
         <div>
         </div><!-- 
         --><div>
-          <label>Dashboard</label>
+          <label id="dashboard">Dashboard</label>
         </div><!-- 
         --><div>
           <form>
@@ -81,18 +95,21 @@
       </div>
       <div class="oweboard">
         <div>
-          <label id="plus_label">
+          <span><label id="you_label">You owe: </label></span>
+          <span><label id="plus_label"></label></span>
         </div><!-- 
         --><div>
-          <label id="total_label">
+          <span><label id="total_label">Total balance: </label></span>
+          <span><label id="total_label"></label></span>
         </div><!-- 
         --><div>
-          <label id="minus_label">
+          <span><label id="you_are_label">You are owed: </label></span>
+          <span><label id="minus_label"></label></span>
         </div>
       </div>
       <div class="oweboard__container">
-        <label>You are owed: </label>
-        <label>You owe: </label>
+        <label id="you_list">You owe: </label>
+        <label id="you_are_list">You are owed: </label>
       </div>
       <div class="oweboard__container">
         <div class="oweboard__container-item">
@@ -105,6 +122,49 @@
           </ol>
         </div>
       </div>
+      <script>
+        language = {
+          en: {
+            "account": "Account",
+            "dashboard": "Dashboard",
+            "you_owe": "You owe: ",
+            "total_owe": "Total balance: ",
+            "you_are_owed": "You are owed: ",
+          },
+          ru: {
+            "account": "Аккаунт",
+            "dashboard": "Панель",
+            "you_owe": "Вы должны: ",
+            "total_owe": "Баланс: ",
+            "you_are_owed": "Вам должны: ",
+          }
+        };
+        if (window.location.hash){
+          console.log(window.location.hash);
+          if (window.location.hash == "#ru"){
+            console.log("here!");
+            document.getElementById("togBtn").checked = true;
+            document.getElementById("account").text = language.ru.account;
+            document.getElementById("dashboard").innerHTML = language.ru.dashboard;
+            document.getElementById("you_label").innerHTML = language.ru.you_owe;
+            document.getElementById("total_label").innerHTML = language.ru.total_owe;
+            document.getElementById("you_are_label").innerHTML = language.ru.you_are_owed;
+            document.getElementById("you_list").innerHTML = language.ru.you_owe;
+            document.getElementById("you_are_list").innerHTML = language.ru.you_are_owed;
+          }
+          else{
+            console.log("there!");
+            document.getElementById("togBtn").checked = false;
+            document.getElementById("account").text = language.en.account;
+            document.getElementById("dashboard").innerHTML = language.en.dashboard;
+            document.getElementById("you_label").innerHTML = language.en.you_owe;
+            document.getElementById("total_label").innerHTML = language.en.total_owe;
+            document.getElementById("you_are_label").innerHTML = language.en.you_are_owed;
+            document.getElementById("you_list").innerHTML = language.en.you_owe;
+            document.getElementById("you_are_list").innerHTML = language.en.you_are_owed;
+          }
+        }
+      </script>
     </main>
     <footer>
       <h3>Khatskevich, 2021
