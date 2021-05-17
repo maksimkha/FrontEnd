@@ -3,6 +3,39 @@
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Create - Agrexa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="connect.js"></script>
+    <script>
+      function save_owe() {
+        firebase.database().ref('users/').push({
+          event: document.getElementById("event").value,
+          category: document.getElementById("category").value,
+          amount: document.getElementById("amount").value,
+          method: document.getElementById("method").value,
+          event: document.getElementById("event").value,
+          event: document.getElementById("event").value,
+        });
+      }
+    </script>
+    <script>
+      function add_input() {
+        const div = document.createElement('div');
+        div.className = "create-form__line-container"
+        div.innerHTML = "<input><label name='user_name'>pays</label><input name='user_amount'  type='number'>";
+        saveBtn = document.getElementById("saveBtn");
+        form = document.getElementById("create-form");
+        form.insertBefore(div, saveBtn);
+      }
+    </script>
+    <script>
+      function delete_input() {
+        divs = document.getElementsByClassName("create-form__line-container");
+        to_del = divs[divs.length - 1];
+        if (divs.length > 8)
+          to_del.remove();
+      }
+    </script>
   </head>
   <body>
     <header>
@@ -17,9 +50,7 @@
             <a href="index.html" class="topbar__site-name">Agrexa</a>
           </div><!-- 
         --><div>
-            <form>
-              <button class="topbar__button" formaction="signup.html">Sign up</button>
-            </form>
+            <a href="signup.html" class="topbar__account" id='account'>Account</a>
           </div>
       </div>
     </header>
@@ -27,48 +58,55 @@
       <div class="pagebar">
         <h1>Add an expence
       </div>
-        <form class="create-form" id="form1">
-                <div class="create-form__line-container">
-                    <label>Event:</label>
-                    <input type="text">
-                </div>
-                <div class="create-form__line-container">
-                    <label>Category:</label>
-                    <select>
-                        <option>Entertaiment</option>
-                        <option>Food and drink</option>
-                        <option>Home</option>
-                        <option>Life</option>
-                        <option>Utility</option>
-                        <option>Others</option>
-                    </select>
-                </div>
-                <div class="create-form__line-container">
-                    <label>Check amount:</label>
-                    <input type="number">
-                </div>
-                <div class="create-form__line-container">
-                    <label>Photo(opt.):</label>
-                    <input type="file" accept=".jpg,.jpeg,.png">
-                </div>
-                <div class="create-form__line-container">
-                    <label>Split method:</label>
-                    <select>
-                        <option>Equal</option>
-                        <option>Amounts</option>
-                    </select>
-                </div>
-                <div class="create-form__line-container">
-                  <button>Add</button>
-                  <button>Delete</button>
-                </div>
-                <div class="create-form__line-container">
-                  <input>
-                  <label>pays</label>
-                  <input type="number">
-                </div>
-                <button>Save</button>
-          </form>
+      <form class="create-form" id="create-form">
+        <div class="create-form__line-container">
+            <label>Event:</label>
+            <input type="text" name="event" id="event">
+        </div>
+        <div class="create-form__line-container">
+            <label>Category:</label>
+            <select name="category" id="category">
+                <option>Entertaiment</option>
+                <option>Food and drink</option>
+                <option>Home</option>
+                <option>Life</option>
+                <option>Utility</option>
+                <option>Others</option>
+            </select>
+        </div>
+        <div class="create-form__line-container">
+            <label>Check amount:</label>
+            <input type="number" name="amount" id="amount">
+        </div>
+        <div class="create-form__line-container">
+            <label>Photo(opt.):</label>
+            <input type="file" name="photo" id="photo" accept=".jpg,.jpeg,.png">
+        </div>
+        <div class="create-form__line-container">
+            <label>Split method:</label>
+            <select name="method" id="method">
+                <option>Equal</option>
+                <option>Amounts</option>
+            </select>
+        </div>
+        <div class="create-form__line-container">
+          <label>Paid by:</label>
+          <select name="paid_by" id="paid_by">
+              <option>Me</option>
+              <option>Multiple persons</option>
+          </select>
+      </div>
+        <div class="create-form__line-container">
+          <button name="addition" id="addition" onclick="add_input();return false;">Add</button>
+          <button name="delete" id="delete" onclick="delete_input();return false;">Delete</button>
+        </div>
+        <div class="create-form__line-container">
+          <input name="user_name">
+          <label>pays</label>
+          <input name="user_amount" type="number">
+        </div>
+        <button onclick="save_owe()" id="saveBtn">Save</button>
+      </form>
     </main>
     <footer>
       <h3>Khatskevich, 2021

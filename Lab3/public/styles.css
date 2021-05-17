@@ -14,13 +14,13 @@ body {
     width: 33.3%;
     text-align: center;
 }
-.topbar__button{
-    background-color: #d9ad7c;
-    border: 3px solid rgb(0, 0, 0);
-    border-radius: 25px;
+.topbar__account{
+    background-color: #674d3c;
+    color: gray;
+    border: 0px solid rgb(0, 0, 0);
     font-size: 2vh;
-    padding: 1vh 1.5vh;
     text-align: center;
+    text-decoration: none;
 }
 .topbar__site-name {
     background-color: #674d3c;
@@ -331,5 +331,5 @@ footer {
 .account-form input{
     height: 4vh;
     font-size: 3vh;
-    width: auto;
+    width: 12vw;
 }

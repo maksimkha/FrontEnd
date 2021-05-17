@@ -5,6 +5,24 @@
     <style>
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="connect.js"></script>
+    <script>
+      function on_load(){
+        link = document.getElementById('account');
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+              link.href = 'account.html';
+            } else {
+              const googleAuth = new firebase.auth.GoogleAuthProvider();
+              firebase.auth().signInWithPopup(googleAuth);
+          }
+        });
+      }
+      window.onload = on_load;
+    </script>
   </head>
   <body>
     <header>
@@ -19,9 +37,7 @@
               <a href="index.html" class="topbar__site-name">Agrexa</a>
             </div><!-- 
           --><div>
-          <form>
-            <button class="topbar__button" formaction="signup.html">Sign up</button>
-          </form>
+            <a href="signup.html" class="topbar__account" id='account'>Account</a>
         </div>
       </div>
     </header>
@@ -72,15 +88,5 @@
     <footer>
       <h3>Khatskevich, 2021
     </footer>
-    <script>
-      var config = {
-        apiKey: "apiKey",
-        authDomain: "projectId.firebaseapp.com",
-        databaseURL: "https://agrexa-60b32-default-rtdb.europe-west1.firebasedatabase.app/",
-        storageBucket: "bucket.appspot.com"
-        };
-      firebase.initializeApp(config);
-  var database = firebase.database();
-    </script>
   </body>
 </html>

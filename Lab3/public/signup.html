@@ -3,6 +3,23 @@
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Sign up - Agrexa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="connect.js"></script>
+    <script>
+      function google_sign(){
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            alert("wow, get out of this page!")
+          } else {
+            const googleAuth = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(googleAuth);
+          }
+        });
+      }
+      window.onload = google_sign;
+    </script>
   </head>
   <body>
     <header>
@@ -15,11 +32,9 @@
         </div><!-- 
         --><div>
             <a href="index.html" class="topbar__site-name">Agrexa</a>
-        </div><!-- 
+          </div><!-- 
         --><div>
-          <form>
-            <button class="topbar__button" formaction="signup.html">Sign up</button>
-          </form>
+            <a href="signup.html" class="topbar__account" id='account'>Account</a>
         </div>
       </div>
     </header>
@@ -29,10 +44,9 @@
             <span class="sign-area__sign-label">Sign in with:</span>
             <div id="custom-sign-btn" class="customGPlusSignIn">
               <span class="sign-area__sign-icon"></span>
-              <span class="sign-area__sign-btntext">Google</span>
+              <span class="sign-area__sign-btntext" onclick="google_sign()">Google</span>
             </div>
           </div>
-          <div id="name"></div> 
         </div> 
     </main>
     <footer>
