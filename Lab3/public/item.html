@@ -3,6 +3,98 @@
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Item - Agrexa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="connect.js"></script>
+    <script>
+      function on_load(){
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            item_id = new URLSearchParams(window.location.search).get("id");
+            firebase.database().ref("users/" + user.uid + "/owes/" + item_id).once('value', (snapshot) => {
+              data = snapshot.val();
+              names = document.getElementsByName("user_name");
+              amounts = document.getElementsByName("user_amount");
+              document.getElementById("event").value = data.event;
+              document.getElementById("category").value = data.category;
+              document.getElementById("amount").value = data.amount;
+              document.getElementById("method").value = data.method;
+              amounts[0].value = data.owes.I;
+              i = 0;
+              for (const [key, value] of Object.entries(data.owes)) {
+                names[i].value = key;
+                amounts[i].value = value;
+                i++;
+              }
+            });
+          } else {
+            console.log("hey, leave this page!");
+          }
+        });
+      }
+      window.onload = on_load;
+    </script>
+    <script>
+      function delete_item(){
+        user = firebase.auth().currentUser;
+        item_id = new URLSearchParams(window.location.search).get("id");
+        firebase.database().ref("users/" + user.uid + "/owes/" + item_id).remove();
+        window.location.href = "index.html";
+      }
+    </script>
+    <script>
+      function edit_item(){
+        user = firebase.auth().currentUser;
+        item_id = new URLSearchParams(window.location.search).get("id");
+        btn = document.getElementById("edit_btn");
+        names = document.getElementsByName("user_name");
+        amounts = document.getElementsByName("user_amount");
+        if (btn.textContent == "Edit"){
+          btn.textContent="Save"
+          document.getElementById("event").readOnly = false;
+          document.getElementById("category").readOnly = false;
+          document.getElementById("amount").readOnly = false;
+          document.getElementById("method").readOnly = false;
+          for (i = 0; i < names.length; i++){
+            names[i].readOnly = false;
+            amounts[i].readOnly = false;
+          }
+        }
+        else{
+          btn.textContent="Edit"
+          document.getElementById("event").readOnly = true;
+          document.getElementById("category").readOnly = true;
+          document.getElementById("amount").readOnly = true;
+          document.getElementById("method").readOnly = true;
+          for (i = 0; i < names.length; i++){
+            names[i].readOnly = true;
+            amounts[i].readOnly = true;
+          }
+          medium_amount = document.getElementById("amount").value / (names.length);
+          dict = {};
+          for (i = 0; i < names.length; i++){
+            dict[names[i].value] = amounts[i].value;
+          }
+          sign = '';
+          if (amounts[0].value > medium_amount){
+            sign = '+';
+          }
+          else{
+            sign = '-';
+          }
+          firebase.database().ref("users/" + user.uid + "/owes/" + item_id).set({
+            event: document.getElementById("event").value,
+            category: document.getElementById("category").value,
+            amount: document.getElementById("amount").value,
+            method: document.getElementById("method").value,
+            owes: dict,
+            sign: sign,
+            difference: Math.abs(medium_amount - amounts[0].value)
+          });
+        }
+      }
+    </script>
   </head>
   <body>
     <header>
@@ -28,15 +120,15 @@
         <form class="page-form" id="form1">
                 <div class="page-form__line-container">
                     <label>Event:</label>
-                    <input type="text" readonly>
+                    <input type="text" readonly id="event">
                 </div>
                 <div class="page-form__line-container">
                     <label>Category:</label>
-                    <input type="text" readonly>
+                    <input type="text" readonly id="category">
                 </div>
                 <div class="page-form__line-container">
                     <label>Check amount:</label>
-                    <input type="number" readonly>
+                    <input type="number" readonly id="amount">
                 </div>
                 <div class="page-form__line-container">
                     <label>Photo(opt.):</label>
@@ -44,21 +136,21 @@
                 </div>
                 <div class="page-form__line-container">
                     <label>Split method:</label>
-                    <input type="number" readonly>
+                    <input type="text" readonly id="method">
                 </div>
                 <div class="page-form__line-container">
-                  <input>
+                  <input readonly name="user_name">
+                  <label>paid</label>
+                  <input type="number" readonly name="user_amount">
+                </div>
+                <div class="page-form__line-container">
+                  <input readonly name="user_name">
                   <label>pays</label>
-                  <input type="number">
+                  <input type="number" readonly name="user_amount">
                 </div>
                 <div class="page-form__line-container">
-                  <input>
-                  <label>pays</label>
-                  <input type="number">
-                </div>
-                <div class="page-form__line-container">
-                  <button>Edit</button>
-                  <button>Delete</button>
+                  <button onclick="edit_item();return false;" id="edit_btn">Edit</button>
+                  <button onclick="delete_item();return false;">Delete</button>
                 </div>
           </form>
     </main>
