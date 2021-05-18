@@ -22,7 +22,6 @@
               document.getElementById("category").value = data.category;
               document.getElementById("amount").value = data.amount;
               document.getElementById("method").value = data.method;
-              //amounts[0].value = data.owes.I;
               bool_photo = data.photo
               if (bool_photo){
                 firebase.storage().ref("users/" + user.uid + "/owes/").child(item_id).getDownloadURL().then(function(url){
@@ -69,10 +68,10 @@
         btn = document.getElementById("edit_btn");
         names = document.getElementsByName("user_name");
         amounts = document.getElementsByName("user_amount");
-        if (btn.textContent == "Edit"){
+        if (btn.textContent == language.en.edit || btn.textContent == language.ru.edit){
           btn.textContent="Save"
           document.getElementById("event").readOnly = false;
-          document.getElementById("category").readOnly = false;
+          document.getElementById("category").disabled = false;
           document.getElementById("amount").readOnly = false;
           document.getElementById("method").readOnly = false;
           for (i = 0; i < names.length; i++){
@@ -83,7 +82,7 @@
         else{
           btn.textContent="Edit"
           document.getElementById("event").readOnly = true;
-          document.getElementById("category").readOnly = true;
+          document.getElementById("category").disabled = true;
           document.getElementById("amount").readOnly = true;
           document.getElementById("method").readOnly = true;
           for (i = 0; i < names.length; i++){
@@ -111,6 +110,7 @@
             sign: sign,
             difference: Math.abs(medium_amount - amounts[0].value)
           });
+          window.location.href = "index.html";
         }
       }
     </script>
@@ -149,41 +149,75 @@
         <h1 id="owe_h">Owe page
       </div>
         <form class="page-form" id="page-form">
-                <div class="page-form__line-container">
-                    <label id="event_label">Event:</label>
-                    <input type="text" readonly id="event">
-                </div>
-                <div class="page-form__line-container">
-                    <label id="category_label">Category:</label>
-                    <input type="text" readonly id="category">
-                </div>
-                <div class="page-form__line-container">
-                    <label id="check_amount_label">Check amount:</label>
-                    <input type="number" readonly id="amount">
-                </div>
-                <div class="page-form__line-container">
-                    <label id="photo_label">Photo(opt.):</label>
-                    <img id="photo" height="250vh">
-                </div>
-                <div class="page-form__line-container">
-                    <label id="method_label">Split method:</label>
-                    <input type="text" readonly id="method">
-                </div>
-                <div class="page-form__line-container">
-                  <input readonly name="user_name">
-                  <label>-</label>
-                  <input type="number" readonly name="user_amount">
-                </div>
-                <div class="page-form__line-container">
-                  <input readonly name="user_name">
-                  <label>-</label>
-                  <input type="number" readonly name="user_amount">
-                </div>
-                <div class="page-form__line-container" id="btn_line">
-                  <button onclick="edit_item();return false;" id="edit_btn">Edit</button>
-                  <button onclick="delete_item();return false;" id="delete_btn">Delete</button>
-                </div>
-          </form>
+          <div class="page-form__line-container">
+              <label id="event_label">Event:</label>
+              <input type="text" readonly id="event">
+          </div>
+          <div class="page-form__line-container">
+            <label id="category_label">Category:</label>
+            <select name="category" id="category" disabled>
+              <option>Entertaiment</option>
+              <option>Food and drink</option>
+              <option>Home</option>
+              <option>Life</option>
+              <option>Utility</option>
+              <option>Others</option>
+            </select>
+          </div>
+          <div class="page-form__line-container">
+              <label id="check_amount_label">Check amount:</label>
+              <input type="number" readonly id="amount">
+          </div>
+          <div class="page-form__line-container">
+              <label id="photo_label">Photo(opt.):</label>
+              <img id="photo" height="250vh">
+          </div>
+          <div class="page-form__line-container">
+            <label id="method_label">Split method:</label>
+            <select name="method" id="method" disabled>
+              <option>Amounts</option>
+              <option>Equal</option>
+            </select>
+          </div>
+          <div class="page-form__line-container">
+            <input readonly name="user_name">
+            <label>-</label>
+            <input type="number" readonly name="user_amount">
+          </div>
+          <div class="page-form__line-container">
+            <input readonly name="user_name">
+            <label>-</label>
+            <input type="number" readonly name="user_amount">
+          </div>
+          <div class="page-form__line-container" id="btn_line">
+            <button onclick="edit_item();return false;" id="edit_btn">Edit</button>
+            <button onclick="delete_item();return false;" id="delete_btn">Delete</button>
+          </div>
+        </form>
+      <script>
+        function change_category_options(lang){
+          cat_select = document.getElementById("category");
+          met_select = document.getElementById("method");
+          if (lang == 'en'){
+            ans = language.en.category_opt;
+            methods = language.en.method_opt;
+          }
+          else{
+            ans = language.ru.category_opt;
+            methods = language.ru.method_opt;
+          }
+          i = 0
+          for (const [key, value] of Object.entries(ans)) {
+            cat_select.options[i].innerText = value;
+            i++;
+          }
+          i = 0
+          for (const [key, value] of Object.entries(methods)) {
+            met_select.options[i].innerText = value;
+            i++;
+          }
+        }
+      </script>
       <script>
         language = {
           en: {
@@ -197,6 +231,18 @@
             "edit": "Edit",
             "save": "Save",
             "delete": "Delete",
+            "category_opt":{
+              "entertaimant": "Entertaimant",
+              "fnd": "Food and drink",
+              "home": "Home",
+              "life": "Life",
+              "utility": "Utility",
+              "others": "Others"
+            },
+            "method_opt":{
+              "amounts": "Amounts",
+              "equal": "Equal"
+            }
           },
           ru: {
             "account": "Аккаунт",
@@ -209,6 +255,18 @@
             "edit": "Изменить",
             "save": "Сохранить",
             "delete": "Удалить",
+            "category_opt":{
+              "entertaimant": "Развлечение",
+              "fnd": "Еда и напитки",
+              "home": "Дом",
+              "life": "Жизнь",
+              "utility": "Утилити",
+              "others": "Другое"
+            },
+            "method_opt":{
+              "amounts": "Величины",
+              "equal": "Поравну"
+            }
           }
         };
         if (window.location.hash){
@@ -224,6 +282,7 @@
             document.getElementById("method_label").innerHTML = language.ru.method;
             document.getElementById("edit_btn").innerHTML = language.ru.edit;
             document.getElementById("delete_btn").innerHTML = language.ru.delete;
+            change_category_options('ru');
           }
           else{
             document.getElementById("togBtn").checked = false;
@@ -236,6 +295,7 @@
             document.getElementById("method_label").innerHTML = language.en.method;
             document.getElementById("edit_btn").innerHTML = language.en.edit;
             document.getElementById("delete_btn").innerHTML = language.en.delete;
+            change_category_options('en');
           }
         }
       </script>

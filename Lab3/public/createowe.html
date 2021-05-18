@@ -210,6 +210,30 @@
         <button onclick="save_owe();return false;" id="saveBtn">Save</button>
       </form>
       <script>
+        function change_category_options(lang){
+          cat_select = document.getElementById("category");
+          met_select = document.getElementById("method");
+          if (lang == 'en'){
+            ans = language.en.category_opt;
+            methods = language.en.method_opt;
+          }
+          else{
+            ans = language.ru.category_opt;
+            methods = language.ru.method_opt;
+          }
+          i = 0
+          for (const [key, value] of Object.entries(ans)) {
+            cat_select.options[i].innerText = value;
+            i++;
+          }
+          i = 0
+          for (const [key, value] of Object.entries(methods)) {
+            met_select.options[i].innerText = value;
+            i++;
+          }
+        }
+      </script>
+      <script>
         language = {
           en: {
             "account": "Account",
@@ -223,6 +247,14 @@
             "add": "Add",
             "delete": "Delete",
             "me": "Me",
+            "category_opt":{
+              "entertaimant": "Entertaimant",
+              "fnd": "Food and drink",
+              "home": "Home",
+              "life": "Life",
+              "utility": "Utility",
+              "others": "Others"
+            }
           },
           ru: {
             "account": "Аккаунт",
@@ -236,6 +268,14 @@
             "add": "Добавить",
             "delete": "Удалить",
             "me": "Я",
+            "category_opt":{
+              "entertaimant": "Развлечение",
+              "fnd": "Еда и напитки",
+              "home": "Дом",
+              "life": "Жизнь",
+              "utility": "Утилити",
+              "others": "Другое"
+            }
           }
         };
         if (window.location.hash){
@@ -253,6 +293,7 @@
             document.getElementById("delete").innerHTML = language.ru.delete;
             document.getElementById("saveBtn").innerHTML = language.ru.save;
             document.getElementById("me_field").value = language.ru.me;
+            change_category_options('ru');
           }
           else{
             document.getElementById("togBtn").checked = false;
@@ -267,6 +308,7 @@
             document.getElementById("delete").innerHTML = language.en.delete;
             document.getElementById("saveBtn").innerHTML = language.en.save;
             document.getElementById("me_field").value = language.en.me;
+            change_category_options('en');
           }
         }
       </script>
