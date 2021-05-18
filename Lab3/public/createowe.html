@@ -6,6 +6,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
     <script src="connect.js"></script>
     <script>
       function on_load(){
@@ -38,26 +39,46 @@
         else{
           sign = '-';
         }
+        photo = true;
+        if (document.getElementById("photo").value == '') photo = false;
         if (user) {
-          firebase.database().ref('users/'+user.uid+'/owes').push({
+          key = firebase.database().ref('users/'+user.uid+'/owes').push({
             event: document.getElementById("event").value,
             category: document.getElementById("category").value,
             amount: document.getElementById("amount").value,
             method: document.getElementById("method").value,
             owes: dict,
             sign: sign,
+            photo: photo,
             difference: Math.abs(medium_amount - amounts[0].value)
-          });
+          }).getKey();
           } else {
             alert("log in first!")
           }
+          storageRef = firebase.storage().ref('users/'+user.uid+'/owes/' + key);
+          uploadTask = storageRef.put(document.getElementById("photo").files[0]).then(function(snapshot) {
+              console.log('Uploaded a blob or file!');
+          });;
           window.location.href = "index.html";
+      }
+    </script>
+    <script>
+      function set_medium(){
+        method = document.getElementById("method").value;
+        names = document.getElementsByName("user_name");
+        amounts = document.getElementsByName("user_amount");
+        if (method == "Equal"){
+          medium_amount = document.getElementById("amount").value / (names.length);
+          for (i = 0; i < amounts.length; i++){
+            amounts[i].value = medium_amount;
+          }
+        }
       }
     </script>
     <script>
       function add_input() {
         method = document.getElementById("method").value;
-        const div = document.createElement('div');
+        div = document.createElement('div');
         div.className = "create-form__line-container"
         if (method == "Equal"){
           div.innerHTML = "<input><label name='user_name'>-</label><input name='user_amount'  type='number' value=0 readonly>";
@@ -68,6 +89,7 @@
         saveBtn = document.getElementById("saveBtn");
         form = document.getElementById("create-form");
         form.insertBefore(div, saveBtn);
+        set_medium();
       }
     </script>
     <script>
@@ -76,22 +98,32 @@
         to_del = divs[divs.length - 1];
         if (divs.length > 8)
           to_del.remove();
+        names = document.getElementsByName("user_name");
+        amounts = document.getElementsByName("user_amount");
+        if (method == "Equal"){
+          medium_amount = document.getElementById("amount").value / (names.length);
+          for (i = 0; i < amounts.length; i++){
+            amounts[i].value = medium_amount;
+          }
+        }
       }
     </script>
     <script>
       function paid_method() {
         method = document.getElementById("method").value;
-        divs = document.getElementsByName("user_amount");
+        names = document.getElementsByName("user_name");
+        amounts = document.getElementsByName("user_amount");
         if (method == "Equal"){
-          for (i = 0; i < divs.length; i++){
-            divs[i].value = 0;
-            divs[i].readOnly = true;
+          medium_amount = document.getElementById("amount").value / (names.length);
+          for (i = 0; i < amounts.length; i++){
+            amounts[i].value = medium_amount;
+            amounts[i].readOnly = true;
           }
         }
         else{
           for (i = 0; i < divs.length; i++){
-            divs[i].readOnly = false;
-            divs[i].value = '';
+            amounts[i].readOnly = false;
+            amounts[i].value = '';
           }
         }
       }
@@ -152,7 +184,7 @@
         </div>
         <div class="create-form__line-container">
             <label id="photo_label">Photo(opt.):</label>
-            <input type="file" name="photo" id="photo" accept=".jpg,.jpeg,.png">
+            <input type="file" name="files[]" id="photo" accept=".jpg,.jpeg,.png">
         </div>
         <div class="create-form__line-container">
             <label id="method_label">Split method:</label>
@@ -166,7 +198,7 @@
           <button name="delete" id="delete" onclick="delete_input();return false;">Delete</button>
         </div>
         <div class="create-form__line-container">
-          <input name="user_name" value="I" readonly>
+          <input name="user_name" value="Me" readonly id="me_field">
           <label>-</label>
           <input name="user_amount" type="number">
         </div>
@@ -190,6 +222,7 @@
             "save": "Save",
             "add": "Add",
             "delete": "Delete",
+            "me": "Me",
           },
           ru: {
             "account": "Аккаунт",
@@ -202,6 +235,7 @@
             "save": "Сохранить",
             "add": "Добавить",
             "delete": "Удалить",
+            "me": "Я",
           }
         };
         if (window.location.hash){
@@ -218,6 +252,7 @@
             document.getElementById("addition").innerHTML = language.ru.add;
             document.getElementById("delete").innerHTML = language.ru.delete;
             document.getElementById("saveBtn").innerHTML = language.ru.save;
+            document.getElementById("me_field").value = language.ru.me;
           }
           else{
             document.getElementById("togBtn").checked = false;
@@ -231,6 +266,7 @@
             document.getElementById("addition").innerHTML = language.en.add;
             document.getElementById("delete").innerHTML = language.en.delete;
             document.getElementById("saveBtn").innerHTML = language.en.save;
+            document.getElementById("me_field").value = language.en.me;
           }
         }
       </script>

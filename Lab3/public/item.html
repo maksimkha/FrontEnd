@@ -6,12 +6,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
     <script src="connect.js"></script>
     <script>
       function on_load(){
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
             item_id = new URLSearchParams(window.location.search).get("id");
+            bool_photo = true;
             firebase.database().ref("users/" + user.uid + "/owes/" + item_id).once('value', (snapshot) => {
               data = snapshot.val();
               names = document.getElementsByName("user_name");
@@ -20,9 +22,26 @@
               document.getElementById("category").value = data.category;
               document.getElementById("amount").value = data.amount;
               document.getElementById("method").value = data.method;
-              amounts[0].value = data.owes.I;
+              //amounts[0].value = data.owes.I;
+              bool_photo = data.photo
+              if (bool_photo){
+                firebase.storage().ref("users/" + user.uid + "/owes/").child(item_id).getDownloadURL().then(function(url){
+                  document.getElementById("photo").src = url;
+                  console.log("hooray");
+                }).catch(function(error) {
+                  console.error(error);
+                });
+              }
               i = 0;
               for (const [key, value] of Object.entries(data.owes)) {
+                if (i > 1){
+                  div = document.createElement('div');
+                  div.className = "page-form__line-container"
+                  div.innerHTML = "<input readonly name='user_name'><label>-</label><input type='number' readonly name='user_amount'>";
+                  btn_line = document.getElementById("btn_line");
+                  form = document.getElementById("page-form");
+                  form.insertBefore(div, btn_line);
+                }
                 names[i].value = key;
                 amounts[i].value = value;
                 i++;
@@ -129,7 +148,7 @@
       <div class="pagebar">
         <h1 id="owe_h">Owe page
       </div>
-        <form class="page-form" id="form1">
+        <form class="page-form" id="page-form">
                 <div class="page-form__line-container">
                     <label id="event_label">Event:</label>
                     <input type="text" readonly id="event">
@@ -144,7 +163,7 @@
                 </div>
                 <div class="page-form__line-container">
                     <label id="photo_label">Photo(opt.):</label>
-                    <img>
+                    <img id="photo" height="250vh">
                 </div>
                 <div class="page-form__line-container">
                     <label id="method_label">Split method:</label>
@@ -160,7 +179,7 @@
                   <label>-</label>
                   <input type="number" readonly name="user_amount">
                 </div>
-                <div class="page-form__line-container">
+                <div class="page-form__line-container" id="btn_line">
                   <button onclick="edit_item();return false;" id="edit_btn">Edit</button>
                   <button onclick="delete_item();return false;" id="delete_btn">Delete</button>
                 </div>
