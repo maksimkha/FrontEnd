@@ -1,0 +1,67 @@
+<html> 
+  <head>
+    <link rel='stylesheet' type='text/css' href='styles.css'>
+    <title>Account - Agrexa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="connect.js"></script>
+    <script>
+      function google_sign(){
+        link = document.getElementById('account');
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+              link.href = 'account.html';
+              document.getElementById('name_field').value = user.displayName;
+              document.getElementById('email_field').value = user.email;
+              document.getElementById('photo_field').setAttribute("src", user.photoURL)
+          } else {
+            const googleAuth = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(googleAuth);
+          }
+        });
+      }
+      window.onload = google_sign;
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div>
+          <label class="switch">
+            <input type="checkbox" id="togBtn">
+            <div class="slider round"></div>
+          </label>
+        </div><!-- 
+        --><div>
+              <a href="index.html" class="topbar__site-name">Agrexa</a>
+            </div><!-- 
+          --><div>
+              <a href="signup.html" class="topbar__account" id='account'>Account</a>
+          </div>
+      </div>
+    </header>
+    <main>
+      <div class="pagebar">
+        <h1>Account
+      </div>
+      <form class="account-form">
+        <div class="account-form__line-container">
+          <img id="photo_field" width="50vh"/>
+        </div>
+        <div class="account-form__line-container">
+            <label>Name:</label>
+            <input type="text" readonly id="name_field">
+        </div>
+        <div class="account-form__line-container">
+            <label>Email:</label>
+            <input type="text" readonly id="email_field">
+        </div>
+      </form>
+    </main>
+    <footer>
+      <h3>Khatskevich, 2021
+    </footer>
+  </body>
+</html>
