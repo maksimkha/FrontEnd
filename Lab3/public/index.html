@@ -17,32 +17,47 @@
         plus = 0;
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
-              link.href = 'account.html';
-              data = firebase.database().ref('users/'+user.uid+'/owes').once('value', (snapshot) => {
-                snapshot.forEach((childSnapshot) => {
-                  li = document.createElement("li");
-                  a = document.createElement("a");
-                  a.appendChild(document.createTextNode(childSnapshot.val().event));
-                  a.href = "item.html?id=" + childSnapshot.key;
-                  li.appendChild(a);
-                  if (childSnapshot.val().sign == '+'){
-                    list = document.getElementById("plus_list");
-                    list.appendChild(li);
-                    plus += childSnapshot.val().difference;
-                  }
-                  else{
-                    list = document.getElementById("minus_list");
-                    list.appendChild(li);
-                    minus += childSnapshot.val().difference;
-                  }
-                });
-                document.getElementById("minus_label").innerHTML = minus;
-                document.getElementById("plus_label").innerHTML = plus;
-                document.getElementById("total_label").innerHTML = (plus - minus);
+            firebase.database().ref("users/" + user.uid + "/language").once('value', (snapshot) => {
+              if (snapshot.exists()) {
+                location.href = snapshot.val();
+                if (snapshot.val() == "#ru" && document.getElementById("account").text == "Account"){ 
+                  location.reload();
+                }
+                else if (snapshot.val() == "#en" && document.getElementById("account").text == "Аккаунт"){
+                  location.reload();
+                }
+              } else {
+                console.log("no lang written");
+              }
+            }).catch((error) => {
+              console.error(error);
+            });
+            link.href = 'account.html';
+            data = firebase.database().ref('users/'+user.uid+'/owes').once('value', (snapshot) => {
+              snapshot.forEach((childSnapshot) => {
+                li = document.createElement("li");
+                a = document.createElement("a");
+                a.appendChild(document.createTextNode(childSnapshot.val().event));
+                a.href = "item.html?id=" + childSnapshot.key;
+                li.appendChild(a);
+                if (childSnapshot.val().sign == '+'){
+                  list = document.getElementById("plus_list");
+                  list.appendChild(li);
+                  plus += childSnapshot.val().difference;
+                }
+                else{
+                  list = document.getElementById("minus_list");
+                  list.appendChild(li);
+                  minus += childSnapshot.val().difference;
+                }
               });
-            } else {
-              const googleAuth = new firebase.auth.GoogleAuthProvider();
-              firebase.auth().signInWithPopup(googleAuth);
+              document.getElementById("minus_label").innerHTML = minus;
+              document.getElementById("plus_label").innerHTML = plus;
+              document.getElementById("total_label").innerHTML = (plus - minus);
+            });
+          } else {
+            const googleAuth = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(googleAuth);
           }
         });
       }
@@ -60,13 +75,15 @@
           </label>
           <script>
             function change_lng(){
+              user = firebase.auth().currentUser;
               btn = document.getElementById("togBtn");
-              if (btn.checked == false){
-                location.href = "#en";
+              if (btn.checked == true){
+                location.href = hash = "#ru";
               }
               else{
-                location.href ="#ru";
+                location.href = hash ="#en";
               }
+              firebase.database().ref("users/" + user.uid + "/language/").set(hash);
               location.reload();
             }
           </script>
@@ -148,7 +165,6 @@
             document.getElementById("you_are_label").innerHTML = language.ru.you_are_owed;
             document.getElementById("you_list").innerHTML = language.ru.you_owe;
             document.getElementById("you_are_list").innerHTML = language.ru.you_are_owed;
-            change_category_options('ru');
           }
           else{
             document.getElementById("togBtn").checked = false;
@@ -159,7 +175,6 @@
             document.getElementById("you_are_label").innerHTML = language.en.you_are_owed;
             document.getElementById("you_list").innerHTML = language.en.you_owe;
             document.getElementById("you_are_list").innerHTML = language.en.you_are_owed;
-            change_category_options('ru');
           }
         }
       </script>

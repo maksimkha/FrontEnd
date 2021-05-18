@@ -12,6 +12,21 @@
       function on_load(){
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
+            firebase.database().ref("users/" + user.uid + "/language").once('value', (snapshot) => {
+              if (snapshot.exists()) {
+                location.href = snapshot.val();
+                if (snapshot.val() == "#ru" && document.getElementById("account").text == "Account"){ 
+                  location.reload();
+                }
+                else if (snapshot.val() == "#en" && document.getElementById("account").text == "Аккаунт"){
+                  location.reload();
+                }
+              } else {
+                console.log("no lang written");
+              }
+            }).catch((error) => {
+              console.error(error);
+            });
             item_id = new URLSearchParams(window.location.search).get("id");
             bool_photo = true;
             firebase.database().ref("users/" + user.uid + "/owes/" + item_id).once('value', (snapshot) => {
@@ -125,13 +140,15 @@
           </label>
           <script>
             function change_lng(){
+              user = firebase.auth().currentUser;
               btn = document.getElementById("togBtn");
               if (btn.checked == true){
-                location.href = "#ru";
+                location.href = hash = "#ru";
               }
               else{
-                location.href ="#en";
+                location.href = hash ="#en";
               }
+              firebase.database().ref("users/" + user.uid + "/language/").set(hash);
               location.reload();
             }
           </script>

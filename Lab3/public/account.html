@@ -12,6 +12,21 @@
         link = document.getElementById('account');
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
+            firebase.database().ref("users/" + user.uid + "/language").once('value', (snapshot) => {
+              if (snapshot.exists()) {
+                location.href = snapshot.val();
+                if (snapshot.val() == "#ru" && document.getElementById("account").text == "Account"){ 
+                  location.reload();
+                }
+                else if (snapshot.val() == "#en" && document.getElementById("account").text == "Аккаунт"){
+                  location.reload();
+                }
+              } else {
+                console.log("no lang written");
+              }
+            }).catch((error) => {
+              console.error(error);
+            });
               link.href = 'account.html';
               document.getElementById('name_field').value = user.displayName;
               document.getElementById('email_field').value = user.email;
@@ -35,13 +50,15 @@
           </label>
           <script>
             function change_lng(){
+              user = firebase.auth().currentUser;
               btn = document.getElementById("togBtn");
-              if (btn.checked == false){
-                location.href = "#en";
+              if (btn.checked == true){
+                location.href = hash = "#ru";
               }
               else{
-                location.href ="#ru";
+                location.href = hash ="#en";
               }
+              firebase.database().ref("users/" + user.uid + "/language/").set(hash);
               location.reload();
             }
           </script>
@@ -60,7 +77,7 @@
       </div>
       <form class="account-form">
         <div class="account-form__line-container">
-          <img id="photo_field" width="50vh"/>
+          <img id="photo_field" width="50vw"/>
         </div>
         <div class="account-form__line-container">
             <label id="name_label">Name:</label>
