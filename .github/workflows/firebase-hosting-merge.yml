@@ -17,5 +17,6 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AGREXA_60B32 }}'
           channelId: live
           projectId: agrexa-60b32
+          entryPoint : "./Lab3"
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
