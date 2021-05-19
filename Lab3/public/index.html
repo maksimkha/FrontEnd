@@ -51,8 +51,8 @@
                   minus += childSnapshot.val().difference;
                 }
               });
-              document.getElementById("minus_label").innerHTML = minus;
-              document.getElementById("plus_label").innerHTML = plus;
+              document.getElementById("plus_label").innerHTML = minus;
+              document.getElementById("minus_label").innerHTML = plus;
               document.getElementById("total_label").innerHTML = (plus - minus);
             });
           } else {
@@ -129,11 +129,11 @@
       </div>
       <div class="oweboard__container">
         <div class="oweboard__container-item">
-          <ol id="plus_list">
+          <ol id="minus_list">
           </ol>
         </div>
         <div class="oweboard__container-item">
-          <ol id="minus_list">
+          <ol id="plus_list">
           </ol>
         </div>
       </div>
