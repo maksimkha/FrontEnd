@@ -105,7 +105,7 @@
         </div><!-- 
         --><div>
           <form>
-            <button formaction="createowe.html">Create owe</button>
+            <button formaction="createowe.html" id="create_owe">Create owe</button>
           </form>
         </div>
       </div>
@@ -142,6 +142,7 @@
           en: {
             "account": "Account",
             "dashboard": "Dashboard",
+            "create_owe": "Create owe",
             "you_owe": "You owe: ",
             "total_owe": "Total balance: ",
             "you_are_owed": "You are owed: ",
@@ -149,6 +150,7 @@
           ru: {
             "account": "Аккаунт",
             "dashboard": "Панель",
+            "create_owe": "Создать чек",
             "you_owe": "Вы должны: ",
             "total_owe": "Баланс: ",
             "you_are_owed": "Вам должны: ",
@@ -160,6 +162,7 @@
             document.getElementById("togBtn").checked = true;
             document.getElementById("account").text = language.ru.account;
             document.getElementById("dashboard").innerHTML = language.ru.dashboard;
+            document.getElementById("create_owe").textContent = language.ru.create_owe;
             document.getElementById("you_label").innerHTML = language.ru.you_owe;
             document.getElementById("total_owe_label").innerHTML = language.ru.total_owe;
             document.getElementById("you_are_label").innerHTML = language.ru.you_are_owed;
@@ -170,6 +173,7 @@
             document.getElementById("togBtn").checked = false;
             document.getElementById("account").text = language.en.account;
             document.getElementById("dashboard").innerHTML = language.en.dashboard;
+            document.getElementById("create_owe").textContent = language.en.create_owe;
             document.getElementById("you_label").innerHTML = language.en.you_owe;
             document.getElementById("total_owe_label").innerHTML = language.en.total_owe;
             document.getElementById("you_are_label").innerHTML = language.en.you_are_owed;

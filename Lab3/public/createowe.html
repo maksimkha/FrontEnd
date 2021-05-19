@@ -38,7 +38,7 @@
       window.onload = on_load;
     </script>
     <script>
-      function save_owe() {
+      async function save_owe() {
         user = firebase.auth().currentUser;
         names = document.getElementsByName("user_name");
         amounts = document.getElementsByName("user_amount");
@@ -56,12 +56,15 @@
         }
         photo = true;
         if (document.getElementById("photo").value == '') photo = false;
+        console.log("saving to db");
+        category_opt = document.getElementById("category")
+        method_opt = document.getElementById("method")
         if (user) {
-          key = firebase.database().ref('users/'+user.uid+'/owes').push({
+          key = await firebase.database().ref('users/'+ user.uid + '/owes').push({
             event: document.getElementById("event").value,
-            category: document.getElementById("category").value,
+            category: category_opt.options[category_opt.selectedIndex].id,
             amount: document.getElementById("amount").value,
-            method: document.getElementById("method").value,
+            method: method_opt.options[method_opt.selectedIndex].id,
             owes: dict,
             sign: sign,
             photo: photo,
@@ -70,8 +73,8 @@
           } else {
             alert("log in first!")
           }
-          storageRef = firebase.storage().ref('users/'+user.uid + '/owes/' + key);
-          uploadTask = storageRef.put(document.getElementById("photo").files[0]).then(function(snapshot) {
+          console.log("saving photo");
+          uploadTask = await firebase.storage().ref('users/'+ user.uid + '/owes/' + key).put(document.getElementById("photo").files[0]).then((snapshot) => {
               console.log('Uploaded a blob or file!');
           });;
           window.location.href = "index.html";
@@ -128,19 +131,18 @@
         method = document.getElementById("method").value;
         names = document.getElementsByName("user_name");
         amounts = document.getElementsByName("user_amount");
-        if (method == "Equal"){
-          medium_amount = document.getElementById("amount").value / (names.length);
-          for (i = 0; i < amounts.length; i++){
-            amounts[i].value = medium_amount;
-            amounts[i].readOnly = true;
+        if (method == "Equal" || method == "Поравну"){
+            medium_amount = document.getElementById("amount").value / (names.length);
+            for (i = 0; i < amounts.length; i++){
+              amounts[i].value = medium_amount;
+              amounts[i].readOnly = true;
+            }
           }
-        }
-        else{
-          for (i = 0; i < divs.length; i++){
-            amounts[i].readOnly = false;
-            amounts[i].value = '';
+          else if (method == "Amounts" || method == "Величины"){
+            for (i = 0; i < amounts.length; i++){
+              amounts[i].readOnly = false;
+            }
           }
-        }
       }
     </script>
   </head>
@@ -185,15 +187,15 @@
             <input type="text" name="event" id="event">
         </div>
         <div class="create-form__line-container">
-            <label id="category_label">Category:</label>
-            <select name="category" id="category">
-                <option>Entertaiment</option>
-                <option>Food and drink</option>
-                <option>Home</option>
-                <option>Life</option>
-                <option>Utility</option>
-                <option>Others</option>
-            </select>
+          <label id="category_label">Category:</label>
+          <select name="category" id="category">
+            <option id="category_1">Entertaiment</option>
+            <option id="category_2">Food and drink</option>
+            <option id="category_3">Home</option>
+            <option id="category_4">Life</option>
+            <option id="category_5">Utility</option>
+            <option id="category_6">Others</option>
+          </select>
         </div>
         <div class="create-form__line-container">
             <label id="check_amount_label">Check amount:</label>
@@ -206,8 +208,8 @@
         <div class="create-form__line-container">
             <label id="method_label">Split method:</label>
             <select name="method" id="method" onchange="paid_method()">
-              <option>Amounts</option>
-              <option>Equal</option>
+              <option id="method_1">Amounts</option>
+              <option id="method_2">Equal</option>
             </select>
         </div>
         <div class="create-form__line-container">
