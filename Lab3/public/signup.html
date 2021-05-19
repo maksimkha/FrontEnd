@@ -7,33 +7,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="connect.js"></script>
-    <script>
-      function google_sign(){
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-              firebase.database().ref("users/" + user.uid + "/language").once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                  location.href = snapshot.val();
-                  if (snapshot.val() == "#ru" && document.getElementById("account").text == "Account"){ 
-                    location.reload();
-                  }
-                  else if (snapshot.val() == "#en" && document.getElementById("account").text == "Аккаунт"){
-                    location.reload();
-                  }
-                } else {
-                  console.log("no lang written");
-                }
-              }).catch((error) => {
-                console.error(error);
-              });
-            alert("wow, get out of this page!")
-          } else {
-            const googleAuth = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(googleAuth);
-          }
-        });
-      }
-    </script>
   </head>
   <body>
     <header>
@@ -43,20 +16,6 @@
             <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
-          <script>
-            function change_lng(){
-              user = firebase.auth().currentUser;
-              btn = document.getElementById("togBtn");
-              if (btn.checked == true){
-                location.href = hash = "#ru";
-              }
-              else{
-                location.href = hash ="#en";
-              }
-              firebase.database().ref("users/" + user.uid + "/language/").set(hash);
-              location.reload();
-            }
-          </script>
         </div><!-- 
         --><div>
             <a href="index.html" class="topbar__site-name">Agrexa</a>
@@ -76,31 +35,7 @@
             </div>
           </div>
         </div> 
-        <script>
-          language = {
-            en: {
-              "account": "Account",
-              "sign": "Sign in with: ",
-            },
-            ru: {
-              "account": "Аккаунт",
-              "sign": "Войти с помощью: ",
-            }
-          };
-          if (window.location.hash){
-            console.log(window.location.hash);
-            if (window.location.hash == "#ru"){
-              document.getElementById("togBtn").checked = true;
-              document.getElementById("account").text = language.ru.account;
-              document.getElementById("sign_label").innerHTML = language.ru.sign;
-            }
-            else{
-              document.getElementById("togBtn").checked = false;
-              document.getElementById("account").text = language.en.account;
-              document.getElementById("sign_label").innerHTML = language.en.sign;
-            }
-          }
-        </script>
+        <script src="js/sign_up.js"></script>
     </main>
     <footer>
       <h3>Khatskevich, 2021

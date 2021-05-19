@@ -9,60 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="connect.js"></script>
-    <script>
-      function on_load(){
-        link = document.getElementById('account');
-        total = 0;
-        minus = 0;
-        plus = 0;
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-            firebase.database().ref("users/" + user.uid + "/language").once('value', (snapshot) => {
-              if (snapshot.exists()) {
-                location.href = snapshot.val();
-                if (snapshot.val() == "#ru" && document.getElementById("account").text == "Account"){ 
-                  location.reload();
-                }
-                else if (snapshot.val() == "#en" && document.getElementById("account").text == "Аккаунт"){
-                  location.reload();
-                }
-              } else {
-                console.log("no lang written");
-              }
-            }).catch((error) => {
-              console.error(error);
-            });
-            link.href = 'account.html';
-            data = firebase.database().ref('users/'+user.uid+'/owes').once('value', (snapshot) => {
-              snapshot.forEach((childSnapshot) => {
-                li = document.createElement("li");
-                a = document.createElement("a");
-                a.appendChild(document.createTextNode(childSnapshot.val().event));
-                a.href = "item.html?id=" + childSnapshot.key;
-                li.appendChild(a);
-                if (childSnapshot.val().sign == '+'){
-                  list = document.getElementById("plus_list");
-                  list.appendChild(li);
-                  plus += childSnapshot.val().difference;
-                }
-                else{
-                  list = document.getElementById("minus_list");
-                  list.appendChild(li);
-                  minus += childSnapshot.val().difference;
-                }
-              });
-              document.getElementById("plus_label").innerHTML = minus;
-              document.getElementById("minus_label").innerHTML = plus;
-              document.getElementById("total_label").innerHTML = (plus - minus);
-            });
-          } else {
-            const googleAuth = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(googleAuth);
-          }
-        });
-      }
-      window.onload = on_load;
-    </script>
   </head>
   <body>
     <header>
@@ -73,20 +19,6 @@
             <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
-          <script>
-            function change_lng(){
-              user = firebase.auth().currentUser;
-              btn = document.getElementById("togBtn");
-              if (btn.checked == true){
-                location.href = hash = "#ru";
-              }
-              else{
-                location.href = hash ="#en";
-              }
-              firebase.database().ref("users/" + user.uid + "/language/").set(hash);
-              location.reload();
-            }
-          </script>
         </div><!-- 
         --><div>
               <a href="index.html" class="topbar__site-name" id="site_name">Agrexa</a>
@@ -137,51 +69,7 @@
           </ol>
         </div>
       </div>
-      <script>
-        language = {
-          en: {
-            "account": "Account",
-            "dashboard": "Dashboard",
-            "create_owe": "Create owe",
-            "you_owe": "You owe: ",
-            "total_owe": "Total balance: ",
-            "you_are_owed": "You are owed: ",
-          },
-          ru: {
-            "account": "Аккаунт",
-            "dashboard": "Панель",
-            "create_owe": "Создать чек",
-            "you_owe": "Вы должны: ",
-            "total_owe": "Баланс: ",
-            "you_are_owed": "Вам должны: ",
-          }
-        };
-        if (window.location.hash){
-          console.log(window.location.hash);
-          if (window.location.hash == "#ru"){
-            document.getElementById("togBtn").checked = true;
-            document.getElementById("account").text = language.ru.account;
-            document.getElementById("dashboard").innerHTML = language.ru.dashboard;
-            document.getElementById("create_owe").textContent = language.ru.create_owe;
-            document.getElementById("you_label").innerHTML = language.ru.you_owe;
-            document.getElementById("total_owe_label").innerHTML = language.ru.total_owe;
-            document.getElementById("you_are_label").innerHTML = language.ru.you_are_owed;
-            document.getElementById("you_list").innerHTML = language.ru.you_owe;
-            document.getElementById("you_are_list").innerHTML = language.ru.you_are_owed;
-          }
-          else{
-            document.getElementById("togBtn").checked = false;
-            document.getElementById("account").text = language.en.account;
-            document.getElementById("dashboard").innerHTML = language.en.dashboard;
-            document.getElementById("create_owe").textContent = language.en.create_owe;
-            document.getElementById("you_label").innerHTML = language.en.you_owe;
-            document.getElementById("total_owe_label").innerHTML = language.en.total_owe;
-            document.getElementById("you_are_label").innerHTML = language.en.you_are_owed;
-            document.getElementById("you_list").innerHTML = language.en.you_owe;
-            document.getElementById("you_are_list").innerHTML = language.en.you_are_owed;
-          }
-        }
-      </script>
+    <script src="js/index.js"></script>
     </main>
     <footer>
       <h3>Khatskevich, 2021
