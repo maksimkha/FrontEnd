@@ -1,4 +1,4 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Main - Agrexa</title>
@@ -9,35 +9,23 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="connect.js"></script>
-    <script>
-      function on_load(){
-        link = document.getElementById('account');
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-              link.href = 'account.html';
-            } else {
-              const googleAuth = new firebase.auth.GoogleAuthProvider();
-              firebase.auth().signInWithPopup(googleAuth);
-          }
-        });
-      }
-      window.onload = on_load;
-    </script>
+    <script src="js/index.js"></script>
   </head>
-  <body>
+  <body onload="on_load();">
     <header>
+      <div id="div1"></div>
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
         </div><!-- 
         --><div>
-              <a href="index.html" class="topbar__site-name">Agrexa</a>
+              <a href="index.html" class="topbar__site-name" id="site_name">Agrexa</a>
             </div><!-- 
           --><div>
-            <a href="signup.html" class="topbar__account" id='account'>Account</a>
+              <a href="signup.html" class="topbar__account" id='account'>Account</a>
         </div>
       </div>
     </header>
@@ -46,41 +34,39 @@
         <div>
         </div><!-- 
         --><div>
-          <label>Dashboard</label>
+          <label id="dashboard">Dashboard</label>
         </div><!-- 
         --><div>
           <form>
-            <button formaction="createowe.html">Create owe</button>
+            <button formaction="createowe.html" id="create_owe">Create owe</button>
           </form>
         </div>
       </div>
       <div class="oweboard">
         <div>
-          <label>You are owed: 0.00$</label>
+          <span><label id="you_label">You owe: </label></span>
+          <span><label id="plus_label"></label></span>
         </div><!-- 
         --><div>
-          <label>Total balance: 0.00$</label>
+          <span><label id="total_owe_label">Total balance: </label></span>
+          <span><label id="total_label"></label></span>
         </div><!-- 
         --><div>
-          <label>You owe: 0.00$</label>
+          <span><label id="you_are_label">You are owed: </label></span>
+          <span><label id="minus_label"></label></span>
         </div>
       </div>
       <div class="oweboard__container">
-        <label>You are owed: </label>
-        <label>You owe: </label>
+        <label id="you_list">You owe: </label>
+        <label id="you_are_list">You are owed: </label>
       </div>
       <div class="oweboard__container">
         <div class="oweboard__container-item">
-          <ol>
-            <li><a href="item.html">temp 1.1</a>
-            <li>temp 1.2
-            <li>temp 1.3
+          <ol id="minus_list">
           </ol>
         </div>
         <div class="oweboard__container-item">
-          <ol>
-            <li>temp 2.1
-            <li>temp 2.2
+          <ol id="plus_list">
           </ol>
         </div>
       </div>

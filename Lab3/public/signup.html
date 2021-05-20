@@ -1,4 +1,4 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Sign up - Agrexa</title>
@@ -7,26 +7,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="connect.js"></script>
-    <script>
-      function google_sign(){
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-            alert("wow, get out of this page!")
-          } else {
-            const googleAuth = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(googleAuth);
-          }
-        });
-      }
-      window.onload = google_sign;
-    </script>
+    <script src="js/sign_up.js"></script>
   </head>
   <body>
     <header>
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
         </div><!-- 
@@ -41,7 +29,7 @@
     <main>
         <div class="sign-area">
         <div id="gSignInWrapper">
-            <span class="sign-area__sign-label">Sign in with:</span>
+            <span class="sign-area__sign-label" id="sign_label">Sign in with:</span>
             <div id="custom-sign-btn" class="customGPlusSignIn">
               <span class="sign-area__sign-icon"></span>
               <span class="sign-area__sign-btntext" onclick="google_sign()">Google</span>

@@ -1,4 +1,4 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Account - Agrexa</title>
@@ -7,30 +7,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="connect.js"></script>
-    <script>
-      function google_sign(){
-        link = document.getElementById('account');
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-              link.href = 'account.html';
-              document.getElementById('name_field').value = user.displayName;
-              document.getElementById('email_field').value = user.email;
-              document.getElementById('photo_field').setAttribute("src", user.photoURL)
-          } else {
-            const googleAuth = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(googleAuth);
-          }
-        });
-      }
-      window.onload = google_sign;
-    </script>
+    <script src="js/account.js"></script>
   </head>
-  <body>
+  <body onload="google_sign();">
     <header>
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
         </div><!-- 
@@ -44,18 +28,18 @@
     </header>
     <main>
       <div class="pagebar">
-        <h1>Account
+        <h1 id="acc_h">Account
       </div>
       <form class="account-form">
         <div class="account-form__line-container">
-          <img id="photo_field" width="50vh"/>
+          <img id="photo_field" width="50vw"/>
         </div>
         <div class="account-form__line-container">
-            <label>Name:</label>
+            <label id="name_label">Name:</label>
             <input type="text" readonly id="name_field">
         </div>
         <div class="account-form__line-container">
-            <label>Email:</label>
+            <label id="email_label">Email:</label>
             <input type="text" readonly id="email_field">
         </div>
       </form>

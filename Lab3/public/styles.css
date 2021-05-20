@@ -76,7 +76,7 @@ input:checked + .slider:before {
 
 .slider:after
 {
-    content:'RU';
+    content:'EN';
     color: white;
     display: block;
     position: absolute;
@@ -87,7 +87,7 @@ input:checked + .slider:before {
 }
 input:checked + .slider:after
 {  
-    content:'EN';
+    content:'RU';
 }
 footer {
     position: fixed;

@@ -1,15 +1,21 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Item - Agrexa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script src="connect.js"></script>
+    <script src="js/item.js"></script>
   </head>
-  <body>
+  <body onload="on_load();">
     <header>
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
         </div><!-- 
@@ -23,44 +29,60 @@
     </header>
     <main>
       <div class="pagebar">
-        <h1>Owe page
+        <h1 id="owe_h">Owe page
       </div>
-        <form class="page-form" id="form1">
-                <div class="page-form__line-container">
-                    <label>Event:</label>
-                    <input type="text" readonly>
-                </div>
-                <div class="page-form__line-container">
-                    <label>Category:</label>
-                    <input type="text" readonly>
-                </div>
-                <div class="page-form__line-container">
-                    <label>Check amount:</label>
-                    <input type="number" readonly>
-                </div>
-                <div class="page-form__line-container">
-                    <label>Photo(opt.):</label>
-                    <img>
-                </div>
-                <div class="page-form__line-container">
-                    <label>Split method:</label>
-                    <input type="number" readonly>
-                </div>
-                <div class="page-form__line-container">
-                  <input>
-                  <label>pays</label>
-                  <input type="number">
-                </div>
-                <div class="page-form__line-container">
-                  <input>
-                  <label>pays</label>
-                  <input type="number">
-                </div>
-                <div class="page-form__line-container">
-                  <button>Edit</button>
-                  <button>Delete</button>
-                </div>
-          </form>
+        <form class="page-form" id="page-form">
+          <div class="page-form__line-container">
+              <label id="event_label">Event:</label>
+              <input type="text" readonly id="event">
+          </div>
+          <div class="page-form__line-container">
+            <label id="category_label">Category:</label>
+            <select name="category" id="category" disabled>
+              <option id="category_1">Entertaiment</option>
+              <option id="category_2">Food and drink</option>
+              <option id="category_3">Home</option>
+              <option id="category_4">Life</option>
+              <option id="category_5">Utility</option>
+              <option id="category_6">Others</option>
+            </select>
+          </div>
+          <div class="page-form__line-container">
+              <label id="check_amount_label">Check amount:</label>
+              <input type="number" readonly id="amount">
+          </div>
+          <div class="page-form__line-container">
+              <label id="photo_label">Photo(opt.):</label>
+              <img id="photo" height="250vh">
+          </div>
+          <div class="page-form__line-container">
+            <label id="method_label">Split method:</label>
+            <select name="method" id="method" disabled onchange="paid_method()">
+              <option id="method_1">Amounts</option>
+              <option id="method_2">Equal</option>
+            </select>
+          </div>
+          <div class="page-form__line-container">
+            <button name="addition" id="addition" onclick="add_input();return false;" disabled>Add</button>
+            <button name="delete" id="delete" onclick="delete_input();return false;" disabled>Delete</button>
+          </div>
+          <div class="page-form__line-container">
+            <input readonly name="user_name">
+            <label>-</label>
+            <input type="number" readonly name="user_amount">
+          </div>
+          <div class="page-form__line-container">
+            <input list="friends1" name="user_name" autocomplete="off" readonly/>
+            <datalist id="friends1" name="user_datalist">
+            </datalist>
+            <label>-</label>
+            <input name="user_amount" readonly type="number">
+          </div>
+          <div class="page-form__line-container" id="btn_line">
+            <button onclick="edit_item();return false;" id="edit_btn">Edit</button>
+            <button onclick="delete_item();return false;" id="delete_btn">Delete</button>
+          </div>
+        </form>
     </main>
     <footer>
       <h3>Khatskevich, 2021

@@ -1,111 +1,84 @@
-<html> 
+<html lang="en"> 
   <head>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <title>Create - Agrexa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
     <script src="connect.js"></script>
-    <script>
-      function save_owe() {
-        firebase.database().ref('users/').push({
-          event: document.getElementById("event").value,
-          category: document.getElementById("category").value,
-          amount: document.getElementById("amount").value,
-          method: document.getElementById("method").value,
-          event: document.getElementById("event").value,
-          event: document.getElementById("event").value,
-        });
-      }
-    </script>
-    <script>
-      function add_input() {
-        const div = document.createElement('div');
-        div.className = "create-form__line-container"
-        div.innerHTML = "<input><label name='user_name'>pays</label><input name='user_amount'  type='number'>";
-        saveBtn = document.getElementById("saveBtn");
-        form = document.getElementById("create-form");
-        form.insertBefore(div, saveBtn);
-      }
-    </script>
-    <script>
-      function delete_input() {
-        divs = document.getElementsByClassName("create-form__line-container");
-        to_del = divs[divs.length - 1];
-        if (divs.length > 8)
-          to_del.remove();
-      }
-    </script>
+    <script src="js/create_owe.js"></script>
   </head>
-  <body>
+  <body onload="on_load();">
     <header>
       <div class="topbar">
         <div>
           <label class="switch">
-            <input type="checkbox" id="togBtn">
+            <input type="checkbox" id="togBtn" onclick="change_lng()">
             <div class="slider round"></div>
           </label>
         </div><!-- 
       --><div>
             <a href="index.html" class="topbar__site-name">Agrexa</a>
-          </div><!-- 
-        --><div>
-            <a href="signup.html" class="topbar__account" id='account'>Account</a>
+            </div><!-- 
+          --><div>
+              <a href="signup.html" class="topbar__account" id='account'>Account</a>
           </div>
       </div>
     </header>
     <main>
       <div class="pagebar">
-        <h1>Add an expence
+        <h1 id="exp_h">Add an expence
       </div>
       <form class="create-form" id="create-form">
         <div class="create-form__line-container">
-            <label>Event:</label>
+            <label id="event_label">Event:</label>
             <input type="text" name="event" id="event">
         </div>
         <div class="create-form__line-container">
-            <label>Category:</label>
-            <select name="category" id="category">
-                <option>Entertaiment</option>
-                <option>Food and drink</option>
-                <option>Home</option>
-                <option>Life</option>
-                <option>Utility</option>
-                <option>Others</option>
-            </select>
+          <label id="category_label">Category:</label>
+          <select name="category" id="category">
+            <option id="category_1">Entertaiment</option>
+            <option id="category_2">Food and drink</option>
+            <option id="category_3">Home</option>
+            <option id="category_4">Life</option>
+            <option id="category_5">Utility</option>
+            <option id="category_6">Others</option>
+          </select>
         </div>
         <div class="create-form__line-container">
-            <label>Check amount:</label>
+            <label id="check_amount_label">Check amount:</label>
             <input type="number" name="amount" id="amount">
         </div>
         <div class="create-form__line-container">
-            <label>Photo(opt.):</label>
-            <input type="file" name="photo" id="photo" accept=".jpg,.jpeg,.png">
+            <label id="photo_label">Photo(opt.):</label>
+            <input type="file" name="files[]" id="photo" accept=".jpg,.jpeg,.png">
         </div>
         <div class="create-form__line-container">
-            <label>Split method:</label>
-            <select name="method" id="method">
-                <option>Equal</option>
-                <option>Amounts</option>
+            <label id="method_label">Split method:</label>
+            <select name="method" id="method" onchange="paid_method()">
+              <option id="method_1">Amounts</option>
+              <option id="method_2">Equal</option>
             </select>
         </div>
-        <div class="create-form__line-container">
-          <label>Paid by:</label>
-          <select name="paid_by" id="paid_by">
-              <option>Me</option>
-              <option>Multiple persons</option>
-          </select>
-      </div>
         <div class="create-form__line-container">
           <button name="addition" id="addition" onclick="add_input();return false;">Add</button>
           <button name="delete" id="delete" onclick="delete_input();return false;">Delete</button>
         </div>
         <div class="create-form__line-container">
-          <input name="user_name">
-          <label>pays</label>
+          <input name="user_name" value="Me" readonly id="me_field">
+          <label>-</label>
           <input name="user_amount" type="number">
         </div>
-        <button onclick="save_owe()" id="saveBtn">Save</button>
+        <div class="create-form__line-container">
+          <input list="friends1" name="user_name" autocomplete="off"/>
+          <datalist id="friends1" name="user_datalist">
+          </datalist>
+          <label>-</label>
+          <input name="user_amount" type="number">
+        </div>
+        <button onclick="save_owe();return false;" id="saveBtn">Save</button>
       </form>
     </main>
     <footer>
