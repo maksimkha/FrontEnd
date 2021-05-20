@@ -1,30 +1,84 @@
+async function set_names(){
+    user = firebase.auth().currentUser;
+    friends = []
+    await firebase.database().ref("users/" + user.uid + "/friends").once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            friends.push(childSnapshot.val().name);
+        });
+    }).catch((error) => {
+        console.error(error);
+    });
+    options = '';
+    datalists = document.getElementsByName("user_datalist");
+    for (j = 1; j <= datalists.length; j++){
+        for (i = 0; i < friends.length; i++) {
+            options += '<option value="' + friends[i] + '" />';
+        }
+        document.getElementById('friends'+j).innerHTML = options;
+    }
+}
+
 function on_load(){
     link = document.getElementById('account');
     firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-          firebase.database().ref("users/" + user.uid + "/language").once('value', (snapshot) => {
-            if (snapshot.exists()) {
-              location.href = snapshot.val();
-              if (snapshot.val() == "#ru" && document.getElementById("account").text == "Account"){ 
-                location.reload();
-              }
-              else if (snapshot.val() == "#en" && document.getElementById("account").text == "Аккаунт"){
-                location.reload();
-              }
-            } else {
-              console.log("no lang written");
-            }
-          }).catch((error) => {
-            console.error(error);
-          });
-          link.href = 'account.html';
-        } else {
-          const googleAuth = new firebase.auth.GoogleAuthProvider();
-          firebase.auth().signInWithPopup(googleAuth);
-      }
+        if (user) {
+            firebase.database().ref("users/" + user.uid + "/language").once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                location.href = snapshot.val();
+                if (snapshot.val() == "#ru" && document.getElementById("account").text == "Account"){ 
+                    location.reload();
+                }
+                else if (snapshot.val() == "#en" && document.getElementById("account").text == "Аккаунт"){
+                    location.reload();
+                }
+                } else {
+                console.log("no lang written");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+            set_names()
+            link.href = 'account.html';
+        } 
+        else {
+            const googleAuth = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(googleAuth);
+        }
     });
+    if (window.location.hash){
+        console.log(window.location.hash);
+        if (window.location.hash == "#ru"){
+          document.getElementById("togBtn").checked = true;
+          document.getElementById("account").text = language.ru.account;
+          document.getElementById("exp_h").innerHTML = language.ru.expence;
+          document.getElementById("event_label").innerHTML = language.ru.event;
+          document.getElementById("category_label").innerHTML = language.ru.category;
+          document.getElementById("check_amount_label").innerHTML = language.ru.check_amount;
+          document.getElementById("photo_label").innerHTML = language.ru.photo;
+          document.getElementById("method_label").innerHTML = language.ru.method;
+          document.getElementById("addition").innerHTML = language.ru.add;
+          document.getElementById("delete").innerHTML = language.ru.delete;
+          document.getElementById("saveBtn").innerHTML = language.ru.save;
+          document.getElementById("me_field").value = language.ru.me;
+          change_category_options('ru');
+        }
+        else{
+          document.getElementById("togBtn").checked = false;
+          document.getElementById("account").text = language.en.account;
+          document.getElementById("exp_h").innerHTML = language.en.expence;
+          document.getElementById("event_label").innerHTML = language.en.event;
+          document.getElementById("category_label").innerHTML = language.en.category;
+          document.getElementById("check_amount_label").innerHTML = language.en.check_amount;
+          document.getElementById("photo_label").innerHTML = language.en.photo;
+          document.getElementById("method_label").innerHTML = language.en.method;
+          document.getElementById("addition").innerHTML = language.en.add;
+          document.getElementById("delete").innerHTML = language.en.delete;
+          document.getElementById("saveBtn").innerHTML = language.en.save;
+          document.getElementById("me_field").value = language.en.me;
+          change_category_options('en');
+        }
+      }
   }
-window.onload = on_load;
 
 async function save_owe() {
     user = firebase.auth().currentUser;
@@ -64,6 +118,24 @@ async function save_owe() {
       uploadTask = await firebase.storage().ref('users/'+ user.uid + '/owes/' + key).put(document.getElementById("photo").files[0]).then((snapshot) => {
           console.log('Uploaded a blob or file!');
       });
+      console.log("saving friends");
+      friends = []
+      for (i = 1; i < names.length; i++){
+        friends.push(names[i].value);
+      }
+      await firebase.database().ref("users/" + user.uid + "/friends").once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            friends = friends.filter(function(e) { return e !== childSnapshot.val().name })
+        });
+      }).catch((error) => {
+        console.error(error);
+      });
+      console.log(friends)
+      for (i = 0; i < friends.length; i++){
+        await firebase.database().ref('users/'+ user.uid + '/friends').push({
+            name: friends[i]
+        })
+      }
       window.location.href = "index.html";
     }
 }
@@ -81,14 +153,16 @@ function set_medium(){
 }
 
 function add_input() {
+    names = document.getElementsByName("user_name");
+    number = names.length - 1
     method = document.getElementById("method").value;
     div = document.createElement('div');
     div.className = "create-form__line-container"
     if (method == "Equal"){
-      div.innerHTML = "<input name='user_name' autocomplete='off'><label>-</label><input name='user_amount' type='number'> value=0 readonly>";
+        div.innerHTML = "<input list='friends" + number +"' name='user_name' autocomplete='off'/><datalist id='friends" + number +"' name='user_datalist'></datalist><label>-</label><input name='user_amount' type='number' value=0 readonly>"
     }
     else{
-      div.innerHTML = "<input name='user_name' autocomplete='off'><label>-</label><input name='user_amount' type='number'>"
+        div.innerHTML = "<input list='friends" + number +"' name='user_name' autocomplete='off'/><datalist id='friends" + number +"' name='user_datalist'></datalist><label>-</label><input name='user_amount' type='number'>"
     }
     saveBtn = document.getElementById("saveBtn");
     form = document.getElementById("create-form");
@@ -151,37 +225,3 @@ function change_category_options(lang){
       i++;
     }
 }
-
-if (window.location.hash){
-    console.log(window.location.hash);
-    if (window.location.hash == "#ru"){
-      document.getElementById("togBtn").checked = true;
-      document.getElementById("account").text = language.ru.account;
-      document.getElementById("exp_h").innerHTML = language.ru.expence;
-      document.getElementById("event_label").innerHTML = language.ru.event;
-      document.getElementById("category_label").innerHTML = language.ru.category;
-      document.getElementById("check_amount_label").innerHTML = language.ru.check_amount;
-      document.getElementById("photo_label").innerHTML = language.ru.photo;
-      document.getElementById("method_label").innerHTML = language.ru.method;
-      document.getElementById("addition").innerHTML = language.ru.add;
-      document.getElementById("delete").innerHTML = language.ru.delete;
-      document.getElementById("saveBtn").innerHTML = language.ru.save;
-      document.getElementById("me_field").value = language.ru.me;
-      change_category_options('ru');
-    }
-    else{
-      document.getElementById("togBtn").checked = false;
-      document.getElementById("account").text = language.en.account;
-      document.getElementById("exp_h").innerHTML = language.en.expence;
-      document.getElementById("event_label").innerHTML = language.en.event;
-      document.getElementById("category_label").innerHTML = language.en.category;
-      document.getElementById("check_amount_label").innerHTML = language.en.check_amount;
-      document.getElementById("photo_label").innerHTML = language.en.photo;
-      document.getElementById("method_label").innerHTML = language.en.method;
-      document.getElementById("addition").innerHTML = language.en.add;
-      document.getElementById("delete").innerHTML = language.en.delete;
-      document.getElementById("saveBtn").innerHTML = language.en.save;
-      document.getElementById("me_field").value = language.en.me;
-      change_category_options('en');
-    }
-  }

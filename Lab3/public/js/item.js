@@ -1,3 +1,25 @@
+async function set_names(){
+    user = firebase.auth().currentUser;
+    friends = []
+    await firebase.database().ref("users/" + user.uid + "/friends").once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            friends.push(childSnapshot.val().name);
+        });
+    }).catch((error) => {
+        console.error(error);
+    });
+    options = '';
+    datalists = document.getElementsByName("user_datalist");
+    for (j = 1; j <= datalists.length; j++){
+        options = '';
+        console.log("setting items for friends" + j);
+        for (i = 0; i < friends.length; i++) {
+            options += '<option value="' + friends[i] + '" />';
+        }
+        document.getElementById('friends'+j).innerHTML = options;
+    }
+}
+
 function on_load(){
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -42,7 +64,7 @@ function on_load(){
             if (i > 1){
               div = document.createElement('div');
               div.className = "page-form__line-container"
-              div.innerHTML = "<input readonly name='user_name'><label>-</label><input type='number' readonly name='user_amount'>";
+              div.innerHTML = "<input list='friends" + i +"' name='user_name' readonly autocomplete='off'/><datalist id='friends" + i +"' name='user_datalist'></datalist><label>-</label><input name='user_amount' type='number' value=0 readonly>"
               btn_line = document.getElementById("btn_line");
               form = document.getElementById("page-form");
               form.insertBefore(div, btn_line);
@@ -51,13 +73,42 @@ function on_load(){
             amounts[i].value = value;
             i++;
           }
+          set_names();
         });
       } else {
         console.log("hey, leave this page!");
       }
     });
+    if (window.location.hash){
+        console.log(window.location.hash);
+        if (window.location.hash == "#ru"){
+          document.getElementById("togBtn").checked = true;
+          document.getElementById("account").text = language.ru.account;
+          document.getElementById("owe_h").innerHTML = language.ru.owe_page;
+          document.getElementById("event_label").innerHTML = language.ru.event;
+          document.getElementById("category_label").innerHTML = language.ru.category;
+          document.getElementById("check_amount_label").innerHTML = language.ru.owe_page;
+          document.getElementById("photo_label").innerHTML = language.ru.owe_page;
+          document.getElementById("method_label").innerHTML = language.ru.method;
+          document.getElementById("edit_btn").innerHTML = language.ru.edit;
+          document.getElementById("delete_btn").innerHTML = language.ru.delete;
+          change_category_options('ru');
+        }
+        else{
+          document.getElementById("togBtn").checked = false;
+          document.getElementById("account").text = language.en.account;
+          document.getElementById("owe_h").innerHTML = language.en.owe_page;
+          document.getElementById("event_label").innerHTML = language.en.event;
+          document.getElementById("category_label").innerHTML = language.en.category;
+          document.getElementById("check_amount_label").innerHTML = language.en.check_amount;
+          document.getElementById("photo_label").innerHTML = language.en.photo;
+          document.getElementById("method_label").innerHTML = language.en.method;
+          document.getElementById("edit_btn").innerHTML = language.en.edit;
+          document.getElementById("delete_btn").innerHTML = language.en.delete;
+          change_category_options('en');
+        }
+    }
 }
-window.onload = on_load;
 
 function delete_item(){
     user = firebase.auth().currentUser;
@@ -67,7 +118,7 @@ function delete_item(){
     window.location.href = "index.html";
 }
 
-function edit_item(){
+async function edit_item(){
     user = firebase.auth().currentUser;
     item_id = new URLSearchParams(window.location.search).get("id");
     btn = document.getElementById("edit_btn");
@@ -113,6 +164,24 @@ function edit_item(){
         sign: sign,
         difference: Math.abs(medium_amount - amounts[0].value)
       });
+      console.log("saving friends");
+      friends = []
+      for (i = 1; i < names.length; i++){
+        friends.push(names[i].value);
+      }
+      await firebase.database().ref("users/" + user.uid + "/friends").once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            friends = friends.filter(function(e) { return e !== childSnapshot.val().name })
+        });
+      }).catch((error) => {
+        console.error(error);
+      });
+      console.log(friends)
+      for (i = 0; i < friends.length; i++){
+        await firebase.database().ref('users/'+ user.uid + '/friends').push({
+            name: friends[i]
+        })
+      }
       window.location.href = "index.html";
     }
   }
@@ -157,35 +226,5 @@ function edit_item(){
     for (const [key, value] of Object.entries(methods)) {
       met_select.options[i].innerText = value;
       i++;
-    }
-  }
-
-  if (window.location.hash){
-    console.log(window.location.hash);
-    if (window.location.hash == "#ru"){
-      document.getElementById("togBtn").checked = true;
-      document.getElementById("account").text = language.ru.account;
-      document.getElementById("owe_h").innerHTML = language.ru.owe_page;
-      document.getElementById("event_label").innerHTML = language.ru.event;
-      document.getElementById("category_label").innerHTML = language.ru.category;
-      document.getElementById("check_amount_label").innerHTML = language.ru.owe_page;
-      document.getElementById("photo_label").innerHTML = language.ru.owe_page;
-      document.getElementById("method_label").innerHTML = language.ru.method;
-      document.getElementById("edit_btn").innerHTML = language.ru.edit;
-      document.getElementById("delete_btn").innerHTML = language.ru.delete;
-      change_category_options('ru');
-    }
-    else{
-      document.getElementById("togBtn").checked = false;
-      document.getElementById("account").text = language.en.account;
-      document.getElementById("owe_h").innerHTML = language.en.owe_page;
-      document.getElementById("event_label").innerHTML = language.en.event;
-      document.getElementById("category_label").innerHTML = language.en.category;
-      document.getElementById("check_amount_label").innerHTML = language.en.check_amount;
-      document.getElementById("photo_label").innerHTML = language.en.photo;
-      document.getElementById("method_label").innerHTML = language.en.method;
-      document.getElementById("edit_btn").innerHTML = language.en.edit;
-      document.getElementById("delete_btn").innerHTML = language.en.delete;
-      change_category_options('en');
     }
   }

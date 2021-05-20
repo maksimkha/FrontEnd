@@ -8,8 +8,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
     <script src="connect.js"></script>
+    <script src="js/item.js"></script>
   </head>
-  <body>
+  <body onload="on_load();">
     <header>
       <div class="topbar">
         <div>
@@ -67,16 +68,17 @@
             <input type="number" readonly name="user_amount">
           </div>
           <div class="page-form__line-container">
-            <input readonly name="user_name">
+            <input list="friends1" name="user_name" autocomplete="off" readonly/>
+            <datalist id="friends1" name="user_datalist">
+            </datalist>
             <label>-</label>
-            <input type="number" readonly name="user_amount">
+            <input name="user_amount" readonly type="number">
           </div>
           <div class="page-form__line-container" id="btn_line">
             <button onclick="edit_item();return false;" id="edit_btn">Edit</button>
             <button onclick="delete_item();return false;" id="delete_btn">Delete</button>
           </div>
         </form>
-      <script src="js/item.js"></script>
     </main>
     <footer>
       <h3>Khatskevich, 2021

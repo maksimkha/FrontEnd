@@ -7,8 +7,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="connect.js"></script>
+    <script src="js/account.js"></script>
   </head>
-  <body>
+  <body onload="google_sign();">
     <header>
       <div class="topbar">
         <div>
@@ -42,7 +43,6 @@
             <input type="text" readonly id="email_field">
         </div>
       </form>
-      <script src="js/account.js"></script>
     </main>
     <footer>
       <h3>Khatskevich, 2021

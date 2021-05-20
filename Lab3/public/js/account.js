@@ -26,23 +26,21 @@ function google_sign(){
         firebase.auth().signInWithPopup(googleAuth);
       }
     });
-  }
-  window.onload = google_sign;
-
-  if (window.location.hash){
-    console.log(window.location.hash);
-    if (window.location.hash == "#ru"){
-      document.getElementById("togBtn").checked = true;
-      document.getElementById("account").text = language.ru.account;
-      document.getElementById("acc_h").innerHTML = language.ru.account;
-      document.getElementById("name_label").innerHTML = language.ru.name;
-      document.getElementById("email_label").innerHTML = language.ru.email;
-    }
-    else{
-      document.getElementById("togBtn").checked = false;
-      document.getElementById("account").text = language.en.account;
-      document.getElementById("acc_h").innerHTML = language.en.account;
-      document.getElementById("name_label").innerHTML = language.en.name;
-      document.getElementById("email_label").innerHTML = language.en.email;
+    if (window.location.hash){
+        console.log(window.location.hash);
+        if (window.location.hash == "#ru"){
+            document.getElementById("togBtn").checked = true;
+            document.getElementById("account").text = language.ru.account;
+            document.getElementById("acc_h").innerHTML = language.ru.account;
+            document.getElementById("name_label").innerHTML = language.ru.name;
+            document.getElementById("email_label").innerHTML = language.ru.email;
+        }
+        else{
+            document.getElementById("togBtn").checked = false;
+            document.getElementById("account").text = language.en.account;
+            document.getElementById("acc_h").innerHTML = language.en.account;
+            document.getElementById("name_label").innerHTML = language.en.name;
+            document.getElementById("email_label").innerHTML = language.en.email;
+        }
     }
   }
