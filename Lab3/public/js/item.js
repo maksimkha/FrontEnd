@@ -131,6 +131,8 @@ async function edit_item(){
       else if (btn.textContent == language.ru.edit){
         btn.textContent = language.ru.save;
       }
+      document.getElementById("addition").disabled = false;
+      document.getElementById("delete").disabled = false;
       document.getElementById("event").readOnly = false;
       document.getElementById("category").disabled = false;
       document.getElementById("amount").readOnly = false;
@@ -142,9 +144,14 @@ async function edit_item(){
     }
     else{
       medium_amount = document.getElementById("amount").value / (names.length);
+      sum = document.getElementById("amount").value;
       dict = {};
       for (i = 0; i < names.length; i++){
         dict[names[i].value] = amounts[i].value;
+        sum -= amounts[i].value;
+      }
+      if (sum != 0){
+          return false;
       }
       sign = '';
       if (amounts[0].value > medium_amount){
@@ -228,3 +235,48 @@ async function edit_item(){
       i++;
     }
   }
+
+  function set_medium(){
+    method = document.getElementById("method").value;
+    names = document.getElementsByName("user_name");
+    amounts = document.getElementsByName("user_amount");
+    if (method == "Equal"){
+      medium_amount = document.getElementById("amount").value / (names.length);
+      for (i = 0; i < amounts.length; i++){
+        amounts[i].value = medium_amount;
+      }
+    }
+}
+
+function add_input() {
+    names = document.getElementsByName("user_name");
+    number = names.length - 1
+    method = document.getElementById("method").value;
+    div = document.createElement('div');
+    div.className = "page-form__line-container"
+    if (method == "Equal"){
+        div.innerHTML = "<input list='friends" + number +"' name='user_name' autocomplete='off'/><datalist id='friends" + number +"' name='user_datalist'></datalist><label>-</label><input name='user_amount' type='number' value=0 readonly>"
+    }
+    else{
+        div.innerHTML = "<input list='friends" + number +"' name='user_name' autocomplete='off'/><datalist id='friends" + number +"' name='user_datalist'></datalist><label>-</label><input name='user_amount' type='number'>"
+    }
+    btn_line = document.getElementById("btn_line");
+    form = document.getElementById("page-form");
+    form.insertBefore(div, btn_line);
+    set_medium();
+}
+
+function delete_input() {
+    divs = document.getElementsByClassName("page-form__line-container");
+    to_del = divs[divs.length - 2];
+    if (divs.length > 9)
+      to_del.remove();
+    names = document.getElementsByName("user_name");
+    amounts = document.getElementsByName("user_amount");
+    if (method == "Equal"){
+      medium_amount = document.getElementById("amount").value / (names.length);
+      for (i = 0; i < amounts.length; i++){
+        amounts[i].value = medium_amount;
+      }
+    }
+}

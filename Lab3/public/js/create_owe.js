@@ -85,9 +85,11 @@ async function save_owe() {
     names = document.getElementsByName("user_name");
     amounts = document.getElementsByName("user_amount");
     medium_amount = document.getElementById("amount").value / (names.length);
+    sum = document.getElementById("amount").value;
     dict = {};
     for (i = 0; i < names.length; i++){
       dict[names[i].value] = amounts[i].value;
+      sum -= amounts[i].value;
     }
     sign = '';
     if (amounts[0].value > medium_amount){
@@ -102,7 +104,7 @@ async function save_owe() {
     console.log(user);
     category_opt = document.getElementById("category")
     method_opt = document.getElementById("method")
-    if (user) {
+    if (user && sum == 0) {
       console.log("saving entity");
       key = await firebase.database().ref('users/'+ user.uid + '/owes').push({
         event: document.getElementById("event").value,
